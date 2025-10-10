@@ -1,0 +1,21 @@
+.hidden {
+  display: none;
+}
+
+.modal-enter {
+  opacity: 0;
+}
+
+.modal-enter-active {
+  opacity: 1;
+  transition: opacity 200ms;
+}
+
+.modal-leave {
+  opacity: 1;
+}
+
+.modal-leave-active {
+  opacity: 0;
+  transition: opacity 200ms;
+}
