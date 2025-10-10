@@ -1,0 +1,15 @@
+/* Assurez-vous que les 3 lignes sont bien là, et rien d'autre qui y ressemble */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Le reste de votre CSS global peut suivre */
+body {
+  /* Vos styles globaux vont ici */
+  @apply bg-gray-50 dark:bg-gray-900;
+}
+
+.wrapper {
+  display: flex;
+  width: 100%;
+}
