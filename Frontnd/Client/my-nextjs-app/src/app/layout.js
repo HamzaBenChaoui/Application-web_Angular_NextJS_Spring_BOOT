@@ -14,7 +14,7 @@ export default function RootLayout({ children }) {
      <html lang="en">
       <body className="bg-gray-100">
         <Navbar />
-        <MotionWrapper>{children}</MotionWrapper>
+       {children}
         
       </body>
     </html>
