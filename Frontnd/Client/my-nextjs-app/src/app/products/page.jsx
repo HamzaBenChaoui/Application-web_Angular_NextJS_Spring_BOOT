@@ -1,7 +1,6 @@
-
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 // Mock data for products
 const mockProducts = [
@@ -121,13 +120,80 @@ const mockProducts = [
 
 const motorcycleTypes = ['All', 'sport', 'cruiser', 'naked', 'adventure'];
 const bicycleTypes = ['All', 'road', 'mountain', 'endurance', 'gravel'];
-const priceRanges = [
-  { label: 'All Prices', min: 0, max: Infinity },
-  { label: 'Under $1,000', min: 0, max: 1000 },
-  { label: '$1,000 - $5,000', min: 1000, max: 5000 },
-  { label: '$5,000 - $10,000', min: 5000, max: 10000 },
-  { label: 'Over $10,000', min: 10000, max: Infinity }
-];
+
+const GlassCard = ({ children, className = "" }) => (
+  <div className={`bg-white/80 backdrop-blur-sm border border-white/30 rounded-2xl shadow-lg ${className}`}>
+    {children}
+  </div>
+);
+
+// Price Range Slider Component
+const PriceRangeSlider = ({ minPrice, maxPrice, value, onChange }) => {
+  const [localValue, setLocalValue] = useState(value);
+  const [isMounted, setIsMounted] = useState(false);
+  
+  useEffect(() => {
+    setIsMounted(true);
+    setLocalValue(value);
+  }, [value]);
+
+  const handleChange = (e) => {
+    const newValue = parseInt(e.target.value);
+    setLocalValue(newValue);
+    onChange(newValue);
+  };
+
+  const percentage = ((localValue - minPrice) / (maxPrice - minPrice)) * 100;
+
+  return (
+    <div className="space-y-4">
+      {/* Price Display */}
+      <div className="flex justify-between items-center">
+        <span className="text-sm text-gray-600">Price Range</span>
+        <span className="text-lg font-bold text-[#302652]">
+          ${localValue.toLocaleString()}
+        </span>
+      </div>
+
+      {/* Slider Container */}
+      <div className="relative py-3">
+        {/* Track Background */}
+        <div className="h-2 bg-gray-200 rounded-full relative">
+          {/* Filled Track */}
+          <div 
+            className="h-2 bg-gradient-to-r from-[#bb00cc] to-purple-600 rounded-full absolute top-0 left-0 transition-all duration-200"
+            style={{ width: `${isMounted ? percentage : 0}%` }}
+          />
+        </div>
+        
+        {/* Slider Input - Hidden but functional */}
+        <input
+          type="range"
+          min={minPrice}
+          max={maxPrice}
+          value={localValue}
+          onChange={handleChange}
+          className="absolute top-1/2 left-0 w-full h-2 -translate-y-1/2 opacity-0 cursor-pointer z-20"
+        />
+        
+        {/* Custom Thumb - Positioned properly */}
+        <div 
+          className="absolute top-1/2 w-6 h-6 bg-white border-2 border-[#bb00cc] rounded-full shadow-lg transform -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform duration-200 z-10"
+          style={{ 
+            left: `calc(${isMounted ? percentage : 0}% - 12px)`,
+            transition: isMounted ? 'left 0.2s ease' : 'none'
+          }}
+        />
+      </div>
+
+      {/* Min/Max Labels */}
+      <div className="flex justify-between text-xs text-gray-500 mt-2">
+        <span>${minPrice.toLocaleString()}</span>
+        <span>${maxPrice.toLocaleString()}</span>
+      </div>
+    </div>
+  );
+};
 
 export default function ProductsPage() {
   const [products, setProducts] = useState(mockProducts);
@@ -135,40 +201,49 @@ export default function ProductsPage() {
   const [filters, setFilters] = useState({
     category: 'all',
     type: 'All',
-    priceRange: 'All Prices',
+    priceRange: 25000, // Start with a reasonable default
     sortBy: 'featured'
   });
   const [searchTerm, setSearchTerm] = useState('');
+  const [isGridView, setIsGridView] = useState(true);
+  const [likedProducts, setLikedProducts] = useState(new Set());
+  const [isClient, setIsClient] = useState(false);
+
+  // Calculate min and max prices from products
+  const minPrice = 0;
+  const maxPrice = Math.max(...products.map(product => product.price));
+  const defaultMaxPrice = Math.ceil(maxPrice / 1000) * 1000; // Round up to nearest 1000
+
+  // Only run animations on client side
+  useEffect(() => {
+    setIsClient(true);
+    // Set initial price range to max price
+    setFilters(prev => ({
+      ...prev,
+      priceRange: defaultMaxPrice
+    }));
+  }, []);
 
   useEffect(() => {
     let filtered = [...products];
 
-    // Filter by search term
     if (searchTerm) {
       filtered = filtered.filter(product =>
         product.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    // Filter by category
     if (filters.category !== 'all') {
       filtered = filtered.filter(product => product.category === filters.category);
     }
 
-    // Filter by type
     if (filters.type !== 'All') {
       filtered = filtered.filter(product => product.type === filters.type);
     }
 
-    // Filter by price range
-    const selectedPriceRange = priceRanges.find(range => range.label === filters.priceRange);
-    if (selectedPriceRange) {
-      filtered = filtered.filter(product =>
-        product.price >= selectedPriceRange.min && product.price <= selectedPriceRange.max
-      );
-    }
+    // Filter by price range using the slider value
+    filtered = filtered.filter(product => product.price <= filters.priceRange);
 
-    // Sort products
     switch (filters.sortBy) {
       case 'price-low':
         filtered.sort((a, b) => a.price - b.price);
@@ -179,7 +254,7 @@ export default function ProductsPage() {
       case 'name':
         filtered.sort((a, b) => a.name.localeCompare(b.name));
         break;
-      default: // featured
+      default:
         filtered.sort((a, b) => b.featured - a.featured);
     }
 
@@ -191,6 +266,25 @@ export default function ProductsPage() {
       ...prev,
       [filterType]: value
     }));
+  };
+
+  const handlePriceRangeChange = (value) => {
+    setFilters(prev => ({
+      ...prev,
+      priceRange: value
+    }));
+  };
+
+  const toggleLike = (productId) => {
+    setLikedProducts(prev => {
+      const newLiked = new Set(prev);
+      if (newLiked.has(productId)) {
+        newLiked.delete(productId);
+      } else {
+        newLiked.add(productId);
+      }
+      return newLiked;
+    });
   };
 
   const getTypeOptions = () => {
@@ -208,45 +302,55 @@ export default function ProductsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-[#302652] to-[#1a1a2e] text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold mb-4">Find Your Perfect Ride</h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50">
+      {/* Hero Section - Simplified */}
+      <div className="relative bg-gradient-to-r from-[#302652] to-[#1a1a2e] text-white py-20 overflow-hidden">
+        {/* Static background pattern - No animation */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `radial-gradient(circle at 25% 25%, #bb00cc 1px, transparent 1px)`,
+            backgroundSize: '40px 40px'
+          }} />
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
+          <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+            Find Your Perfect Ride
+          </h1>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
             Discover our premium collection of motorcycles and bicycles for every adventure
           </p>
         </div>
       </div>
 
       {/* Filters and Products */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filters Sidebar */}
           <div className="lg:w-80 space-y-6">
             {/* Search */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg">
-              <h3 className="font-semibold text-[#302652] mb-4">Search</h3>
+            <GlassCard className="p-6">
+              <h3 className="font-semibold text-[#302652] mb-4 text-lg">Search</h3>
               <div className="relative">
                 <input
                   type="text"
                   placeholder="Search products..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#bb00cc] focus:border-transparent"
+                  className="w-full px-4 py-3 bg-white/70 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#bb00cc] focus:border-transparent transition-all duration-200"
                 />
                 <svg className="w-5 h-5 text-gray-400 absolute right-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
               </div>
-            </div>
+            </GlassCard>
 
             {/* Category Filter */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg">
-              <h3 className="font-semibold text-[#302652] mb-4">Category</h3>
-              <div className="space-y-2">
-                {['all', 'motorcycle', 'bicycle'].map((category) => (
-                  <label key={category} className="flex items-center">
+            <GlassCard className="p-6">
+              <h3 className="font-semibold text-[#302652] mb-4 text-lg">Category</h3>
+              <div className="space-y-3">
+                {['all', 'motorcycle', 'bicycle'].map((category, index) => (
+                  <label key={category} className="flex items-center group cursor-pointer transition-all duration-200 hover:translate-x-1">
                     <input
                       type="radio"
                       name="category"
@@ -255,18 +359,20 @@ export default function ProductsPage() {
                       onChange={(e) => handleFilterChange('category', e.target.value)}
                       className="w-4 h-4 text-[#bb00cc] border-gray-300 focus:ring-[#bb00cc]"
                     />
-                    <span className="ml-2 text-gray-700 capitalize">{category === 'all' ? 'All Categories' : category}</span>
+                    <span className="ml-3 text-gray-700 capitalize font-medium group-hover:text-[#302652] transition-colors">
+                      {category === 'all' ? 'All Categories' : category}
+                    </span>
                   </label>
                 ))}
               </div>
-            </div>
+            </GlassCard>
 
             {/* Type Filter */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg">
-              <h3 className="font-semibold text-[#302652] mb-4">Type</h3>
-              <div className="space-y-2">
+            <GlassCard className="p-6">
+              <h3 className="font-semibold text-[#302652] mb-4 text-lg">Type</h3>
+              <div className="space-y-3">
                 {getTypeOptions().map((type) => (
-                  <label key={type} className="flex items-center">
+                  <label key={type} className="flex items-center group cursor-pointer transition-all duration-200 hover:translate-x-1">
                     <input
                       type="radio"
                       name="type"
@@ -275,152 +381,221 @@ export default function ProductsPage() {
                       onChange={(e) => handleFilterChange('type', e.target.value)}
                       className="w-4 h-4 text-[#bb00cc] border-gray-300 focus:ring-[#bb00cc]"
                     />
-                    <span className="ml-2 text-gray-700 capitalize">{type}</span>
+                    <span className="ml-3 text-gray-700 capitalize font-medium group-hover:text-[#302652] transition-colors">
+                      {type}
+                    </span>
                   </label>
                 ))}
               </div>
-            </div>
+            </GlassCard>
 
-            {/* Price Filter */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg">
-              <h3 className="font-semibold text-[#302652] mb-4">Price Range</h3>
-              <div className="space-y-2">
-                {priceRanges.map((range) => (
-                  <label key={range.label} className="flex items-center">
-                    <input
-                      type="radio"
-                      name="priceRange"
-                      value={range.label}
-                      checked={filters.priceRange === range.label}
-                      onChange={(e) => handleFilterChange('priceRange', e.target.value)}
-                      className="w-4 h-4 text-[#bb00cc] border-gray-300 focus:ring-[#bb00cc]"
-                    />
-                    <span className="ml-2 text-gray-700">{range.label}</span>
-                  </label>
-                ))}
+            {/* Price Range Slider */}
+            <GlassCard className="p-6">
+              <h3 className="font-semibold text-[#302652] mb-4 text-lg">Price Range</h3>
+              <PriceRangeSlider
+                minPrice={minPrice}
+                maxPrice={defaultMaxPrice}
+                value={filters.priceRange}
+                onChange={handlePriceRangeChange}
+              />
+              <div className="mt-4 text-center">
+                <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+                  Showing products up to {formatPrice(filters.priceRange)}
+                </span>
               </div>
-            </div>
+            </GlassCard>
 
             {/* Sort By */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg">
-              <h3 className="font-semibold text-[#302652] mb-4">Sort By</h3>
+            <GlassCard className="p-6">
+              <h3 className="font-semibold text-[#302652] mb-4 text-lg">Sort By</h3>
               <select
                 value={filters.sortBy}
                 onChange={(e) => handleFilterChange('sortBy', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#bb00cc] focus:border-transparent"
+                className="w-full px-4 py-3 bg-white/70 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#bb00cc] focus:border-transparent transition-all duration-200"
               >
                 <option value="featured">Featured</option>
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
                 <option value="name">Name: A to Z</option>
               </select>
-            </div>
+            </GlassCard>
           </div>
 
           {/* Products Grid */}
-<div className="flex-1">
-  {/* Results Header */}
-  <div className="flex justify-between items-center mb-6">
-    <p className="text-gray-600">
-      Showing {filteredProducts.length} of {products.length} products
-    </p>
-    <div className="flex items-center space-x-2">
-      <span className="text-gray-600">View:</span>
-      <button className="p-2 rounded-lg bg-white border border-gray-300">
-        <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
-        </svg>
-      </button>
-      <button className="p-2 rounded-lg bg-[#302652] text-white">
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 13a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM19 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2h-2zM19 13a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2h-2z"/>
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  {/* Products */}
-  {filteredProducts.length === 0 ? (
-    <div className="text-center py-12">
-      <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-      </svg>
-      <h3 className="text-lg font-semibold text-gray-900 mb-2">No products found</h3>
-      <p className="text-gray-600">Try adjusting your filters to see more results.</p>
-    </div>
-  ) : (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {filteredProducts.map((product) => (
-        <div key={product.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
-          {/* Image Section - Fixed Height */}
-          <div className="relative h-48 flex-shrink-0">
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-full h-full object-cover"
-            />
-            {product.featured && (
-              <span className="absolute top-3 left-3 bg-[#bb00cc] text-white px-3 py-1 rounded-full text-sm font-semibold">
-                Featured
-              </span>
-            )}
-            <span className="absolute top-3 right-3 bg-white bg-opacity-90 px-2 py-1 rounded text-sm font-semibold text-[#302652] capitalize">
-              {product.type}
-            </span>
-          </div>
-          
-          {/* Content Section - Flexible but with consistent structure */}
-          <div className="p-6 flex flex-col flex-grow">
-            {/* Product Name and Price - Fixed height with truncation */}
-            <div className="flex justify-between items-start mb-3 min-h-[3.5rem]">
-              <h3 className="text-xl font-semibold text-gray-900 pr-2 line-clamp-2 flex-1">
-                {product.name}
-              </h3>
-              <span className="text-2xl font-bold text-[#302652] whitespace-nowrap ml-2">
-                {formatPrice(product.price)}
-              </span>
-            </div>
-            
-            {/* Category Badge */}
-            <div className="flex items-center mb-4">
-              <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-                product.category === 'motorcycle' 
-                  ? 'bg-blue-100 text-blue-800'
-                  : 'bg-green-100 text-green-800'
-              }`}>
-                {product.category}
-              </span>
+          <div className="flex-1">
+            {/* Results Header */}
+            <div className="flex justify-between items-center mb-8">
+              <p className="text-gray-600 text-lg font-medium">
+                Showing <span className="text-[#302652] font-bold">{filteredProducts.length}</span> of{" "}
+                <span className="text-[#302652] font-bold">{products.length}</span> products
+              </p>
+              <div className="flex items-center space-x-3">
+                <span className="text-gray-600 font-medium">View:</span>
+                <button 
+                  className={`p-3 rounded-xl border transition-all duration-300 ${
+                    !isGridView 
+                      ? 'bg-white border-gray-300 shadow-lg hover:shadow-xl' 
+                      : 'bg-transparent border-transparent hover:bg-gray-100'
+                  }`}
+                  onClick={() => setIsGridView(false)}
+                >
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+                  </svg>
+                </button>
+                <button 
+                  className={`p-3 rounded-xl border transition-all duration-300 ${
+                    isGridView 
+                      ? 'bg-[#302652] text-white shadow-lg hover:shadow-xl' 
+                      : 'bg-transparent border-transparent hover:bg-gray-100'
+                  }`}
+                  onClick={() => setIsGridView(true)}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 13a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM19 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2h-2zM19 13a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2h-2z"/>
+                  </svg>
+                </button>
+              </div>
             </div>
 
-            {/* Specs Grid - Fixed height */}
-            <div className="grid grid-cols-3 gap-2 mb-6 text-sm text-gray-600">
-              {Object.entries(product.specs).map(([key, value]) => (
-                <div key={key} className="text-center">
-                  <div className="font-semibold text-[#302652]">{value}</div>
-                  <div className="text-xs capitalize">{key}</div>
-                </div>
-              ))}
-            </div>
+            {/* Animated divider */}
+            <div className="h-px bg-gradient-to-r from-transparent via-[#bb00cc] to-transparent my-8 scale-x-0 animate-scale-in" />
 
-            {/* Buttons - Always at the bottom */}
-            <div className="flex space-x-3 mt-auto pt-4">
-              <button className="flex-1 bg-[#bb00cc]  text-white py-3 px-4 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 text-center">
-                View Details
-              </button>
-              <button className="p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center">
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+            {/* Products */}
+            {filteredProducts.length === 0 ? (
+              <div className="text-center py-16 animate-fade-in">
+                <svg className="w-16 h-16 text-gray-400 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-              </button>
-            </div>
+                <h3 className="text-2xl font-semibold text-gray-900 mb-3">No products found</h3>
+                <p className="text-gray-600 text-lg">Try adjusting your filters to see more results.</p>
+              </div>
+            ) : (
+              <div className={`grid gap-6 ${
+                isGridView 
+                  ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
+                  : 'grid-cols-1'
+              }`}>
+                {filteredProducts.map((product, index) => (
+                  <div
+                    key={product.id}
+                    className="group bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col"
+                  >
+                    {/* Image Section */}
+                    <div className="relative h-48 overflow-hidden">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                      
+                      {product.featured && (
+                        <span className="absolute top-4 left-4 bg-gradient-to-r from-[#bb00cc] to-purple-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+                          Featured
+                        </span>
+                      )}
+                      
+                      <span className="absolute top-4 right-4 bg-white/90 px-3 py-1 rounded-full text-sm font-semibold text-[#302652] capitalize shadow-lg">
+                        {product.type}
+                      </span>
+                    </div>
+                    
+                    {/* Content Section */}
+                    <div className="p-6 flex flex-col flex-grow">
+                      <div className="flex justify-between items-start mb-4">
+                        <h3 className="text-xl font-bold text-gray-900 pr-2 line-clamp-2 flex-1">
+                          {product.name}
+                        </h3>
+                        <span className="text-2xl font-bold text-[#302652] whitespace-nowrap ml-2">
+                          {formatPrice(product.price)}
+                        </span>
+                      </div>
+                      
+                      <div className="flex items-center mb-4">
+                        <span className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${
+                          product.category === 'motorcycle' 
+                            ? 'bg-blue-100 text-blue-800 border border-blue-200'
+                            : 'bg-green-100 text-green-800 border border-green-200'
+                        }`}>
+                          {product.category}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2 mb-6 text-sm">
+                        {Object.entries(product.specs).map(([key, value]) => (
+                          <div key={key} className="text-center p-2 bg-gray-50 rounded-lg border border-gray-100">
+                            <div className="font-bold text-[#302652]">{value}</div>
+                            <div className="text-xs text-gray-600 capitalize mt-1">{key}</div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="flex space-x-3 mt-auto pt-4">
+                        <button className="flex-1 bg-gradient-to-r from-[#bb00cc] to-purple-600 text-white py-3 px-6 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center">
+                          View Details
+                        </button>
+                        
+                        <button 
+                          className="p-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-300 hover:scale-105 flex items-center justify-center"
+                          onClick={() => toggleLike(product.id)}
+                        >
+                          <svg 
+                            className={`w-6 h-6 transition-all duration-300 ${
+                              likedProducts.has(product.id) 
+                                ? 'text-red-500 fill-red-500 scale-110' 
+                                : 'text-gray-600 hover:text-red-500'
+                            }`}
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        </div>
-      ))}
-    </div>
-  )}
-</div>
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes fade-in-up {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes scale-in {
+          from {
+            transform: scaleX(0);
+          }
+          to {
+            transform: scaleX(1);
+          }
+        }
+
+        .animate-fade-in-up {
+          animation: fade-in-up 0.6s ease-out forwards;
+        }
+
+        .animate-scale-in {
+          animation: scale-in 0.8s ease-out forwards;
+        }
+
+        .animate-fade-in {
+          animation: fade-in-up 0.5s ease-out forwards;
+        }
+      `}</style>
     </div>
   );
 }
