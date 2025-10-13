@@ -31,7 +31,7 @@ export default function NewWaySection() {
   return (
     <div className="bg-[#f2f2f2] py-12 md:py-20 px-4 md:px-8">
       <div className="max-w-6xl ml-auto">
-        <section className="flex flex-col md:flex-row items-start justify-start bg-white p-6 md:p-12 lg:p-16 rounded-2xl shadow-lg relative md:w-[85%]">
+        <section className="flex flex-col md:flex-row items-start justify-start bg-white p-6 md:p-12 lg:p-16 rounded-2xl shadow-lg relative md:w-[100%] ">
           {/* Left side - Image with improved cross-fade */}
           <div className="w-full md:w-2/5 flex items-stretch mb-8 md:mb-0 md:absolute md:-left-16 md:top-1/2 md:transform md:-translate-y-1/2 z-10">
             <div className="relative w-full h-full min-h-[300px] md:min-h-[600px] rounded-2xl overflow-hidden shadow-2xl bg-gray-200">
@@ -65,7 +65,7 @@ export default function NewWaySection() {
           </div>
 
           {/* Right side - Text content */}
-          <div className="w-full md:ml-[40%] md:w-[60%] text-left flex flex-col justify-between md:py-8">
+          <div className="w-full md:ml-[40%] md:w-[100%] text-left flex flex-col justify-between md:py-8">
             <div>
               <h2 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-900 mb-4">
                 Voici la nouvelle manière{" "}
@@ -128,7 +128,7 @@ export default function NewWaySection() {
             </div>
 
             {/* Button */}
-            <button className="mt-8 md:mt-10 px-6 py-3 border-2 border-purple-600 text-purple-600 text-base md:text-lg font-semibold rounded-full hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 w-fit">
+            <button className=" md:mt-3 px-6 py-3 border-2 border-purple-600 text-purple-600 text-base md:text-lg font-semibold rounded-full hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 w-fit">
               Voir comment ça marche →
             </button>
           </div>
