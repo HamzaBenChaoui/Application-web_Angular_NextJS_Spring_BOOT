@@ -1,6 +1,8 @@
 "use client";
 
+import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
+import Footer from '../components/Footer';
 
 // Mock data for products
 const mockProducts = [
@@ -130,10 +132,8 @@ const GlassCard = ({ children, className = "" }) => (
 // Price Range Slider Component
 const PriceRangeSlider = ({ minPrice, maxPrice, value, onChange }) => {
   const [localValue, setLocalValue] = useState(value);
-  const [isMounted, setIsMounted] = useState(false);
   
   useEffect(() => {
-    setIsMounted(true);
     setLocalValue(value);
   }, [value]);
 
@@ -162,7 +162,7 @@ const PriceRangeSlider = ({ minPrice, maxPrice, value, onChange }) => {
           {/* Filled Track */}
           <div 
             className="h-2 bg-gradient-to-r from-[#bb00cc] to-purple-600 rounded-full absolute top-0 left-0 transition-all duration-200"
-            style={{ width: `${isMounted ? percentage : 0}%` }}
+            style={{ width: `${percentage}%` }}
           />
         </div>
         
@@ -180,8 +180,7 @@ const PriceRangeSlider = ({ minPrice, maxPrice, value, onChange }) => {
         <div 
           className="absolute top-1/2 w-6 h-6 bg-white border-2 border-[#bb00cc] rounded-full shadow-lg transform -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform duration-200 z-10"
           style={{ 
-            left: `calc(${isMounted ? percentage : 0}% - 12px)`,
-            transition: isMounted ? 'left 0.2s ease' : 'none'
+            left: `calc(${percentage}% - 12px)`
           }}
         />
       </div>
@@ -196,28 +195,29 @@ const PriceRangeSlider = ({ minPrice, maxPrice, value, onChange }) => {
 };
 
 export default function ProductsPage() {
-  const [products, setProducts] = useState(mockProducts);
-  const [filteredProducts, setFilteredProducts] = useState(mockProducts);
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [filters, setFilters] = useState({
     category: 'all',
     type: 'All',
-    priceRange: 25000, // Start with a reasonable default
+    priceRange: 25000,
     sortBy: 'featured'
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [isGridView, setIsGridView] = useState(true);
   const [likedProducts, setLikedProducts] = useState(new Set());
-  const [isClient, setIsClient] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-  // Calculate min and max prices from products
-  const minPrice = 0;
-  const maxPrice = Math.max(...products.map(product => product.price));
-  const defaultMaxPrice = Math.ceil(maxPrice / 1000) * 1000; // Round up to nearest 1000
-
-  // Only run animations on client side
+  // Initialize on client side only
   useEffect(() => {
-    setIsClient(true);
-    // Set initial price range to max price
+    setIsMounted(true);
+    setProducts(mockProducts);
+    setFilteredProducts(mockProducts);
+    
+    // Calculate max price and set initial filter
+    const maxPrice = Math.max(...mockProducts.map(product => product.price));
+    const defaultMaxPrice = Math.ceil(maxPrice / 1000) * 1000;
+    
     setFilters(prev => ({
       ...prev,
       priceRange: defaultMaxPrice
@@ -225,6 +225,8 @@ export default function ProductsPage() {
   }, []);
 
   useEffect(() => {
+    if (!isMounted) return;
+    
     let filtered = [...products];
 
     if (searchTerm) {
@@ -241,7 +243,6 @@ export default function ProductsPage() {
       filtered = filtered.filter(product => product.type === filters.type);
     }
 
-    // Filter by price range using the slider value
     filtered = filtered.filter(product => product.price <= filters.priceRange);
 
     switch (filters.sortBy) {
@@ -255,11 +256,11 @@ export default function ProductsPage() {
         filtered.sort((a, b) => a.name.localeCompare(b.name));
         break;
       default:
-        filtered.sort((a, b) => b.featured - a.featured);
+        filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
     }
 
     setFilteredProducts(filtered);
-  }, [filters, searchTerm, products]);
+  }, [filters, searchTerm, products, isMounted]);
 
   const handleFilterChange = (filterType, value) => {
     setFilters(prev => ({
@@ -301,11 +302,28 @@ export default function ProductsPage() {
     }).format(price);
   };
 
+  // Don't render anything until mounted on client
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50">
+        <div className="max-w-7xl mx-auto px-4 py-12">
+          <div className="flex justify-center items-center h-64">
+            <div className="text-lg text-gray-600">Loading...</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Calculate min and max prices
+  const minPrice = 0;
+  const maxPrice = Math.max(...products.map(product => product.price));
+  const defaultMaxPrice = Math.ceil(maxPrice / 1000) * 1000;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50">
-      {/* Hero Section - Simplified */}
+      {/* Hero Section */}
       <div className="relative bg-gradient-to-r from-[#302652] to-[#1a1a2e] text-white py-20 overflow-hidden">
-        {/* Static background pattern - No animation */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0" style={{
             backgroundImage: `radial-gradient(circle at 25% 25%, #bb00cc 1px, transparent 1px)`,
@@ -349,7 +367,7 @@ export default function ProductsPage() {
             <GlassCard className="p-6">
               <h3 className="font-semibold text-[#302652] mb-4 text-lg">Category</h3>
               <div className="space-y-3">
-                {['all', 'motorcycle', 'bicycle'].map((category, index) => (
+                {['all', 'motorcycle', 'bicycle'].map((category) => (
                   <label key={category} className="flex items-center group cursor-pointer transition-all duration-200 hover:translate-x-1">
                     <input
                       type="radio"
@@ -458,12 +476,12 @@ export default function ProductsPage() {
               </div>
             </div>
 
-            {/* Animated divider */}
-            <div className="h-px bg-gradient-to-r from-transparent via-[#bb00cc] to-transparent my-8 scale-x-0 animate-scale-in" />
+            {/* Divider */}
+            <div className="h-px bg-gradient-to-r from-transparent via-[#bb00cc] to-transparent my-8" />
 
             {/* Products */}
             {filteredProducts.length === 0 ? (
-              <div className="text-center py-16 animate-fade-in">
+              <div className="text-center py-16">
                 <svg className="w-16 h-16 text-gray-400 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
@@ -476,7 +494,7 @@ export default function ProductsPage() {
                   ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
                   : 'grid-cols-1'
               }`}>
-                {filteredProducts.map((product, index) => (
+                {filteredProducts.map((product) => (
                   <div
                     key={product.id}
                     className="group bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col"
@@ -532,10 +550,11 @@ export default function ProductsPage() {
                       </div>
 
                       <div className="flex space-x-3 mt-auto pt-4">
+                        <Link href="/productPage" >
                         <button className="flex-1 bg-gradient-to-r from-[#bb00cc] to-purple-600 text-white py-3 px-6 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center">
                           View Details
                         </button>
-                        
+                        </Link>
                         <button 
                           className="p-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-300 hover:scale-105 flex items-center justify-center"
                           onClick={() => toggleLike(product.id)}
@@ -546,7 +565,7 @@ export default function ProductsPage() {
                                 ? 'text-red-500 fill-red-500 scale-110' 
                                 : 'text-gray-600 hover:text-red-500'
                             }`}
-                            fill="none" 
+                            fill={likedProducts.has(product.id) ? "currentColor" : "none"} 
                             stroke="currentColor" 
                             viewBox="0 0 24 24"
                           >
@@ -562,40 +581,7 @@ export default function ProductsPage() {
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes fade-in-up {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        @keyframes scale-in {
-          from {
-            transform: scaleX(0);
-          }
-          to {
-            transform: scaleX(1);
-          }
-        }
-
-        .animate-fade-in-up {
-          animation: fade-in-up 0.6s ease-out forwards;
-        }
-
-        .animate-scale-in {
-          animation: scale-in 0.8s ease-out forwards;
-        }
-
-        .animate-fade-in {
-          animation: fade-in-up 0.5s ease-out forwards;
-        }
-      `}</style>
+      <Footer/>
     </div>
   );
 }
