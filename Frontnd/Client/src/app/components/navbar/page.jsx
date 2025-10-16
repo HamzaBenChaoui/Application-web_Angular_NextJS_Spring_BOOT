@@ -7,7 +7,7 @@ const Navbar = () => {
 
     return (
         <>
-            <nav className="bg-white border-b border-gray-100">
+            <nav className="bg-white border-b border-gray-100 sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-20">
                         {/* Logo */}
@@ -32,7 +32,8 @@ const Navbar = () => {
                             {[
                                 { href: "/", label: "Home" },
                                 { href: "/products", label: "Products" },
-                                { href: "/contact", label: "Contact" }
+                                { href: "/contact", label: "Contact" },
+                                { href: "/blogs", label: "Blogs" }
                             ].map((item, index) => (
                                 <Link 
                                     key={item.href}
@@ -233,7 +234,8 @@ const Navbar = () => {
                             { href: "/products?category=motorcycle", label: "Motorcycles", icon: "🏍️" },
                             { href: "/products?category=bicycle", label: "Bicycles", icon: "🚲" },
                             { href: "/favorites", label: "Favorites", icon: "❤️" },
-                            { href: "/contact", label: "Contact", icon: "📞" }
+                            { href: "/contact", label: "Contact", icon: "📞" },
+                            { href: "/blogs", label: "Blogs", icon: "📝" }
                         ].map((item, index) => (
                             <Link 
                                 key={item.href}

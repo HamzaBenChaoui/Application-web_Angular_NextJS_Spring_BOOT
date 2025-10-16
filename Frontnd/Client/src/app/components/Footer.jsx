@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { FaTwitter, FaFacebookF, FaYoutube, FaInstagram, FaLinkedinIn } from "react-icons/fa";
+import FloatingDock from "@/app/components/FloatingDock";
 
 export default function Footer() {
   return (
@@ -67,12 +67,8 @@ export default function Footer() {
         </div>
 
         {/* Réseaux sociaux */}
-        <div className="flex justify-center space-x-5 mt-8 text-purple-900 text-xl">
-          <FaTwitter />
-          <FaFacebookF />
-          <FaYoutube />
-          <FaInstagram />
-          <FaLinkedinIn />
+        <div className="flex justify-center mt-8">
+          <FloatingDock />
         </div>
 
         {/* Mentions légales */}
