@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { MapPin, Calendar } from "lucide-react";
+import CarList from "../components/CarList";
 
 export default function CarRentalHero() {
   const [location, setLocation] = useState("");
@@ -14,6 +15,7 @@ export default function CarRentalHero() {
   };
 
   return (
+    <>
     <div className="flex flex-col md:flex-row items-center justify-between max-w-6xl mx-auto p-6 md:p-12 bg-white rounded-3xl shadow-lg mt-10">
       {/* LEFT SIDE */}
       <div className="md:w-1/2 space-y-6">
@@ -89,5 +91,7 @@ export default function CarRentalHero() {
         />
       </div>
     </div>
+    <CarList />
+    </>
   );
 }
