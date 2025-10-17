@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import Footer from '../components/Footer';
 
-// Mock data for products
+// Données fictives pour les produits
 const mockProducts = [
   {
     id: 1,
@@ -120,16 +120,16 @@ const mockProducts = [
   }
 ];
 
-const motorcycleTypes = ['All', 'sport', 'cruiser', 'naked', 'adventure'];
-const bicycleTypes = ['All', 'road', 'mountain', 'endurance', 'gravel'];
+const motorcycleTypes = ['Tous', 'sport', 'cruiser', 'naked', 'adventure'];
+const bicycleTypes = ['Tous', 'route', 'mountain', 'endurance', 'gravel'];
 
 const GlassCard = ({ children, className = "" }) => (
-  <div className={`bg-white/80 backdrop-blur-sm border border-white/30 rounded-2xl shadow-lg ${className}`}>
+  <div className={`bg-white/80 backdrop-blur-sm border border-white/30 rounded-xl shadow-lg ${className}`}>
     {children}
   </div>
 );
 
-// Price Range Slider Component
+// Composant Curseur de Plage de Prix
 const PriceRangeSlider = ({ minPrice, maxPrice, value, onChange }) => {
   const [localValue, setLocalValue] = useState(value);
   
@@ -146,27 +146,27 @@ const PriceRangeSlider = ({ minPrice, maxPrice, value, onChange }) => {
   const percentage = ((localValue - minPrice) / (maxPrice - minPrice)) * 100;
 
   return (
-    <div className="space-y-4">
-      {/* Price Display */}
+    <div className="space-y-3">
+      {/* Affichage du Prix */}
       <div className="flex justify-between items-center">
-        <span className="text-sm text-gray-600">Price Range</span>
-        <span className="text-lg font-bold text-[#302652]">
+        <span className="text-sm text-gray-600">Plage de prix</span>
+        <span className="text-base font-bold text-[#302652]">
           ${localValue.toLocaleString()}
         </span>
       </div>
 
-      {/* Slider Container */}
-      <div className="relative py-3">
-        {/* Track Background */}
-        <div className="h-2 bg-gray-200 rounded-full relative">
-          {/* Filled Track */}
+      {/* Conteneur du Curseur */}
+      <div className="relative py-2">
+        {/* Arrière-plan de la piste */}
+        <div className="h-1.5 bg-gray-200 rounded-full relative">
+          {/* Piste remplie */}
           <div 
-            className="h-2 bg-gradient-to-r from-[#bb00cc] to-purple-600 rounded-full absolute top-0 left-0 transition-all duration-200"
+            className="h-1.5 bg-gradient-to-r from-[#bb00cc] to-purple-600 rounded-full absolute top-0 left-0 transition-all duration-200"
             style={{ width: `${percentage}%` }}
           />
         </div>
         
-        {/* Slider Input - Hidden but functional */}
+        {/* Input Curseur - Caché mais fonctionnel */}
         <input
           type="range"
           min={minPrice}
@@ -176,17 +176,17 @@ const PriceRangeSlider = ({ minPrice, maxPrice, value, onChange }) => {
           className="absolute top-1/2 left-0 w-full h-2 -translate-y-1/2 opacity-0 cursor-pointer z-20"
         />
         
-        {/* Custom Thumb - Positioned properly */}
+        {/* Curseur personnalisé - Positionné correctement */}
         <div 
-          className="absolute top-1/2 w-6 h-6 bg-white border-2 border-[#bb00cc] rounded-full shadow-lg transform -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform duration-200 z-10"
+          className="absolute top-1/2 w-4 h-4 bg-white border-2 border-[#bb00cc] rounded-full shadow-lg transform -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform duration-200 z-10"
           style={{ 
-            left: `calc(${percentage}% - 12px)`
+            left: `calc(${percentage}% - 8px)`
           }}
         />
       </div>
 
-      {/* Min/Max Labels */}
-      <div className="flex justify-between text-xs text-gray-500 mt-2">
+      {/* Labels Min/Max */}
+      <div className="flex justify-between text-xs text-gray-500">
         <span>${minPrice.toLocaleString()}</span>
         <span>${maxPrice.toLocaleString()}</span>
       </div>
@@ -199,7 +199,7 @@ export default function ProductsPage() {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [filters, setFilters] = useState({
     category: 'all',
-    type: 'All',
+    type: 'Tous',
     priceRange: 25000,
     sortBy: 'featured'
   });
@@ -208,13 +208,13 @@ export default function ProductsPage() {
   const [likedProducts, setLikedProducts] = useState(new Set());
   const [isMounted, setIsMounted] = useState(false);
 
-  // Initialize on client side only
+  // Initialiser uniquement côté client
   useEffect(() => {
     setIsMounted(true);
     setProducts(mockProducts);
     setFilteredProducts(mockProducts);
     
-    // Calculate max price and set initial filter
+    // Calculer le prix maximum et définir le filtre initial
     const maxPrice = Math.max(...mockProducts.map(product => product.price));
     const defaultMaxPrice = Math.ceil(maxPrice / 1000) * 1000;
     
@@ -239,7 +239,7 @@ export default function ProductsPage() {
       filtered = filtered.filter(product => product.category === filters.category);
     }
 
-    if (filters.type !== 'All') {
+    if (filters.type !== 'Tous') {
       filtered = filtered.filter(product => product.type === filters.type);
     }
 
@@ -291,7 +291,7 @@ export default function ProductsPage() {
   const getTypeOptions = () => {
     if (filters.category === 'motorcycle') return motorcycleTypes;
     if (filters.category === 'bicycle') return bicycleTypes;
-    return ['All'];
+    return ['Tous'];
   };
 
   const formatPrice = (price) => {
@@ -302,27 +302,27 @@ export default function ProductsPage() {
     }).format(price);
   };
 
-  // Don't render anything until mounted on client
+  // Ne rien afficher tant que le composant n'est pas monté côté client
   if (!isMounted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50">
         <div className="max-w-7xl mx-auto px-4 py-12">
           <div className="flex justify-center items-center h-64">
-            <div className="text-lg text-gray-600">Loading...</div>
+            <div className="text-lg text-gray-600">Chargement...</div>
           </div>
         </div>
       </div>
     );
   }
 
-  // Calculate min and max prices
+  // Calculer les prix min et max
   const minPrice = 0;
   const maxPrice = Math.max(...products.map(product => product.price));
   const defaultMaxPrice = Math.ceil(maxPrice / 1000) * 1000;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50">
-      {/* Hero Section */}
+      {/* Section Hero */}
       <div className="relative bg-gradient-to-r from-[#302652] to-[#1a1a2e] text-white py-20 overflow-hidden">
         <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0" style={{
@@ -333,122 +333,27 @@ export default function ProductsPage() {
         
         <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
           <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
-            Find Your Perfect Ride
+            Trouvez Votre Véhicule Idéal
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Discover our premium collection of motorcycles and bicycles for every adventure
+            Découvrez notre collection premium de motos et vélos pour chaque aventure
           </p>
         </div>
       </div>
 
-      {/* Filters and Products */}
+      {/* Filtres et Produits */}
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Filters Sidebar */}
-          <div className="lg:w-80 space-y-6">
-            {/* Search */}
-            <GlassCard className="p-6">
-              <h3 className="font-semibold text-[#302652] mb-4 text-lg">Search</h3>
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-4 py-3 bg-white/70 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#bb00cc] focus:border-transparent transition-all duration-200"
-                />
-                <svg className="w-5 h-5 text-gray-400 absolute right-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
-              </div>
-            </GlassCard>
-
-            {/* Category Filter */}
-            <GlassCard className="p-6">
-              <h3 className="font-semibold text-[#302652] mb-4 text-lg">Category</h3>
-              <div className="space-y-3">
-                {['all', 'motorcycle', 'bicycle'].map((category) => (
-                  <label key={category} className="flex items-center group cursor-pointer transition-all duration-200 hover:translate-x-1">
-                    <input
-                      type="radio"
-                      name="category"
-                      value={category}
-                      checked={filters.category === category}
-                      onChange={(e) => handleFilterChange('category', e.target.value)}
-                      className="w-4 h-4 text-[#bb00cc] border-gray-300 focus:ring-[#bb00cc]"
-                    />
-                    <span className="ml-3 text-gray-700 capitalize font-medium group-hover:text-[#302652] transition-colors">
-                      {category === 'all' ? 'All Categories' : category}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </GlassCard>
-
-            {/* Type Filter */}
-            <GlassCard className="p-6">
-              <h3 className="font-semibold text-[#302652] mb-4 text-lg">Type</h3>
-              <div className="space-y-3">
-                {getTypeOptions().map((type) => (
-                  <label key={type} className="flex items-center group cursor-pointer transition-all duration-200 hover:translate-x-1">
-                    <input
-                      type="radio"
-                      name="type"
-                      value={type}
-                      checked={filters.type === type}
-                      onChange={(e) => handleFilterChange('type', e.target.value)}
-                      className="w-4 h-4 text-[#bb00cc] border-gray-300 focus:ring-[#bb00cc]"
-                    />
-                    <span className="ml-3 text-gray-700 capitalize font-medium group-hover:text-[#302652] transition-colors">
-                      {type}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </GlassCard>
-
-            {/* Price Range Slider */}
-            <GlassCard className="p-6">
-              <h3 className="font-semibold text-[#302652] mb-4 text-lg">Price Range</h3>
-              <PriceRangeSlider
-                minPrice={minPrice}
-                maxPrice={defaultMaxPrice}
-                value={filters.priceRange}
-                onChange={handlePriceRangeChange}
-              />
-              <div className="mt-4 text-center">
-                <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
-                  Showing products up to {formatPrice(filters.priceRange)}
-                </span>
-              </div>
-            </GlassCard>
-
-            {/* Sort By */}
-            <GlassCard className="p-6">
-              <h3 className="font-semibold text-[#302652] mb-4 text-lg">Sort By</h3>
-              <select
-                value={filters.sortBy}
-                onChange={(e) => handleFilterChange('sortBy', e.target.value)}
-                className="w-full px-4 py-3 bg-white/70 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#bb00cc] focus:border-transparent transition-all duration-200"
-              >
-                <option value="featured">Featured</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="name">Name: A to Z</option>
-              </select>
-            </GlassCard>
-          </div>
-
-          {/* Products Grid */}
+          {/* Grille de Produits - Maintenant à gauche */}
           <div className="flex-1">
-            {/* Results Header */}
+            {/* En-tête des Résultats */}
             <div className="flex justify-between items-center mb-8">
               <p className="text-gray-600 text-lg font-medium">
-                Showing <span className="text-[#302652] font-bold">{filteredProducts.length}</span> of{" "}
-                <span className="text-[#302652] font-bold">{products.length}</span> products
+                Affichage de <span className="text-[#302652] font-bold">{filteredProducts.length}</span> sur{" "}
+                <span className="text-[#302652] font-bold">{products.length}</span> produits
               </p>
               <div className="flex items-center space-x-3">
-                <span className="text-gray-600 font-medium">View:</span>
+                <span className="text-gray-600 font-medium">Vue :</span>
                 <button 
                   className={`p-3 rounded-xl border transition-all duration-300 ${
                     !isGridView 
@@ -476,17 +381,17 @@ export default function ProductsPage() {
               </div>
             </div>
 
-            {/* Divider */}
+            {/* Séparateur */}
             <div className="h-px bg-gradient-to-r from-transparent via-[#bb00cc] to-transparent my-8" />
 
-            {/* Products */}
+            {/* Produits */}
             {filteredProducts.length === 0 ? (
               <div className="text-center py-16">
                 <svg className="w-16 h-16 text-gray-400 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                <h3 className="text-2xl font-semibold text-gray-900 mb-3">No products found</h3>
-                <p className="text-gray-600 text-lg">Try adjusting your filters to see more results.</p>
+                <h3 className="text-2xl font-semibold text-gray-900 mb-3">Aucun produit trouvé</h3>
+                <p className="text-gray-600 text-lg">Essayez d'ajuster vos filtres pour voir plus de résultats.</p>
               </div>
             ) : (
               <div className={`grid gap-6 ${
@@ -499,7 +404,7 @@ export default function ProductsPage() {
                     key={product.id}
                     className="group bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col"
                   >
-                    {/* Image Section */}
+                    {/* Section Image */}
                     <div className="relative h-48 overflow-hidden">
                       <img
                         src={product.image}
@@ -510,7 +415,7 @@ export default function ProductsPage() {
                       
                       {product.featured && (
                         <span className="absolute top-4 left-4 bg-gradient-to-r from-[#bb00cc] to-purple-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
-                          Featured
+                          En Vedette
                         </span>
                       )}
                       
@@ -519,7 +424,7 @@ export default function ProductsPage() {
                       </span>
                     </div>
                     
-                    {/* Content Section */}
+                    {/* Section Contenu */}
                     <div className="p-6 flex flex-col flex-grow">
                       <div className="flex justify-between items-start mb-4">
                         <h3 className="text-xl font-bold text-gray-900 pr-2 line-clamp-2 flex-1">
@@ -536,7 +441,7 @@ export default function ProductsPage() {
                             ? 'bg-blue-100 text-blue-800 border border-blue-200'
                             : 'bg-green-100 text-green-800 border border-green-200'
                         }`}>
-                          {product.category}
+                          {product.category === 'motorcycle' ? 'moto' : 'vélo'}
                         </span>
                       </div>
 
@@ -544,7 +449,14 @@ export default function ProductsPage() {
                         {Object.entries(product.specs).map(([key, value]) => (
                           <div key={key} className="text-center p-2 bg-gray-50 rounded-lg border border-gray-100">
                             <div className="font-bold text-[#302652]">{value}</div>
-                            <div className="text-xs text-gray-600 capitalize mt-1">{key}</div>
+                            <div className="text-xs text-gray-600 capitalize mt-1">
+                              {key === 'engine' ? 'moteur' : 
+                               key === 'power' ? 'puissance' : 
+                               key === 'weight' ? 'poids' : 
+                               key === 'gears' ? 'vitesses' : 
+                               key === 'frame' ? 'cadre' : 
+                               key === 'suspension' ? 'suspension' : key}
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -552,7 +464,7 @@ export default function ProductsPage() {
                       <div className="flex space-x-3 mt-auto pt-4">
                         <Link href="/productPage" >
                         <button className="flex-1 bg-gradient-to-r from-[#bb00cc] to-purple-600 text-white py-3 px-6 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center">
-                          View Details
+                          Voir les Détails
                         </button>
                         </Link>
                         <button 
@@ -578,6 +490,110 @@ export default function ProductsPage() {
                 ))}
               </div>
             )}
+          </div>
+
+          {/* Barre latérale des Filtres - Maintenant à droite et plus petite */}
+          <div className="lg:w-64 space-y-4">
+            {/* Recherche */}
+            <GlassCard className="p-4">
+              <h3 className="font-semibold text-[#302652] mb-3 text-base">Recherche</h3>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Rechercher des produits..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full px-3 py-2 text-sm bg-white/70 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#bb00cc] focus:border-transparent transition-all duration-200"
+                />
+                <svg className="w-4 h-4 text-gray-400 absolute right-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+              </div>
+            </GlassCard>
+
+            {/* Filtre Catégorie */}
+            <GlassCard className="p-4">
+              <h3 className="font-semibold text-[#302652] mb-3 text-base">Catégorie</h3>
+              <div className="space-y-2">
+                {['all', 'motorcycle', 'bicycle'].map((category) => (
+                  <label key={category} className="flex items-center group cursor-pointer transition-all duration-200 hover:translate-x-1">
+                    <input
+                      type="radio"
+                      name="category"
+                      value={category}
+                      checked={filters.category === category}
+                      onChange={(e) => handleFilterChange('category', e.target.value)}
+                      className="w-3.5 h-3.5 text-[#bb00cc] border-gray-300 focus:ring-[#bb00cc]"
+                    />
+                    <span className="ml-2 text-sm text-gray-700 capitalize font-medium group-hover:text-[#302652] transition-colors">
+                      {category === 'all' ? 'Toutes les catégories' : 
+                       category === 'motorcycle' ? 'motos' : 'vélos'}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </GlassCard>
+
+            {/* Filtre Type */}
+            <GlassCard className="p-4">
+              <h3 className="font-semibold text-[#302652] mb-3 text-base">Type</h3>
+              <div className="space-y-2">
+                {getTypeOptions().map((type) => (
+                  <label key={type} className="flex items-center group cursor-pointer transition-all duration-200 hover:translate-x-1">
+                    <input
+                      type="radio"
+                      name="type"
+                      value={type}
+                      checked={filters.type === type}
+                      onChange={(e) => handleFilterChange('type', e.target.value)}
+                      className="w-3.5 h-3.5 text-[#bb00cc] border-gray-300 focus:ring-[#bb00cc]"
+                    />
+                    <span className="ml-2 text-sm text-gray-700 capitalize font-medium group-hover:text-[#302652] transition-colors">
+                      {type === 'All' ? 'Tous' : 
+                       type === 'sport' ? 'sport' :
+                       type === 'cruiser' ? 'cruiser' :
+                       type === 'naked' ? 'naked' :
+                       type === 'adventure' ? 'aventure' :
+                       type === 'road' ? 'route' :
+                       type === 'mountain' ? 'montagne' :
+                       type === 'endurance' ? 'endurance' :
+                       type === 'gravel' ? 'gravel' : type}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </GlassCard>
+
+            {/* Curseur de Plage de Prix */}
+            <GlassCard className="p-4">
+              <h3 className="font-semibold text-[#302652] mb-3 text-base">Plage de prix</h3>
+              <PriceRangeSlider
+                minPrice={minPrice}
+                maxPrice={defaultMaxPrice}
+                value={filters.priceRange}
+                onChange={handlePriceRangeChange}
+              />
+              <div className="mt-3 text-center">
+                <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
+                  Jusqu'à {formatPrice(filters.priceRange)}
+                </span>
+              </div>
+            </GlassCard>
+
+            {/* Trier par */}
+            <GlassCard className="p-4">
+              <h3 className="font-semibold text-[#302652] mb-3 text-base">Trier par</h3>
+              <select
+                value={filters.sortBy}
+                onChange={(e) => handleFilterChange('sortBy', e.target.value)}
+                className="w-full px-3 py-2 text-sm bg-white/70 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#bb00cc] focus:border-transparent transition-all duration-200"
+              >
+                <option value="featured">En vedette</option>
+                <option value="price-low">Prix : Croissant</option>
+                <option value="price-high">Prix : Décroissant</option>
+                <option value="name">Nom : A à Z</option>
+              </select>
+            </GlassCard>
           </div>
         </div>
       </div>
