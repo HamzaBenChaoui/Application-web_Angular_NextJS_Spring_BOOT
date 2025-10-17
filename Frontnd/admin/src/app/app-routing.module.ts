@@ -5,6 +5,7 @@ import { UserProfilComponent } from './user-profil/user-profil.component';
 import { ProductTableComponent } from './product-table/product-table.component';
 import { CategorieTableComponent } from './categorie-table/categorie-table.component';
 import { SigninComponent } from './signin/signin.component';
+import { ProfileComponent } from './profile/profile.component';
 
 import { AdminComponent } from './layouts/admin/admin.component';
 
@@ -19,7 +20,8 @@ const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'user-profile', component: UserProfilComponent },
       { path: 'product-table', component: ProductTableComponent },
-      { path: 'categorie-table', component: CategorieTableComponent }
+      { path: 'categorie-table', component: CategorieTableComponent },
+      { path: 'profile', component: ProfileComponent }
     ]
   },
   // Optional: Redirect any other path to signin
