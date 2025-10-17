@@ -173,7 +173,7 @@ export default function FavoritesPage() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header Section */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-[#bb00cc] to-purple-600 rounded-full mb-6">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#bb00cc] rounded-full mb-6">
             <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
             </svg>
@@ -226,7 +226,7 @@ export default function FavoritesPage() {
               </p>
               <button
                 onClick={() => router.push('/products')}
-                className="bg-gradient-to-r from-[#bb00cc] to-purple-600 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all duration-300 hover:scale-105"
+                className="bg-[#bb00cc] text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all duration-300 hover:scale-105"
               >
                 Explore Rentals
               </button>
@@ -324,7 +324,7 @@ export default function FavoritesPage() {
                         disabled={product.availability !== 'available'}
                         className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
                           product.availability === 'available'
-                            ? 'bg-gradient-to-r from-[#bb00cc] to-purple-600 text-white hover:shadow-lg hover:scale-105'
+                            ? 'bg-[#bb00cc] text-white hover:shadow-lg hover:scale-105'
                             : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         }`}
                       >
@@ -338,7 +338,6 @@ export default function FavoritesPage() {
           </div>
         )}
 
-      <Footer/>
       </div>
     </div>
   );

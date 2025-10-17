@@ -707,7 +707,7 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
-      <Footer/>
+    
 
       <style jsx>{`
         @keyframes fade-in {

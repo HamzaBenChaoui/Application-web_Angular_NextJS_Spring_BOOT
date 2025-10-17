@@ -1,5 +1,4 @@
-"use client";;
-import { IconArrowNarrowRight } from "@tabler/icons-react";
+"use client";
 import { useState, useRef, useId, useEffect } from "react";
 
 const Slide = ({
@@ -114,37 +113,10 @@ const Slide = ({
   );
 };
 
-const CarouselControl = ({
-  type,
-  title,
-  handleClick
-}) => {
-  return (
-    <button
-      className={`w-10 h-10 flex items-center mx-2 justify-center bg-neutral-200 dark:bg-neutral-800 border-3 border-transparent rounded-full focus:border-[#6D64F7] focus:outline-none hover:-translate-y-0.5 active:translate-y-0.5 transition duration-200 ${
-        type === "previous" ? "rotate-180" : ""
-      }`}
-      title={title}
-      onClick={handleClick}>
-      <IconArrowNarrowRight className="text-neutral-600 dark:text-neutral-200" />
-    </button>
-  );
-};
-
 export default function Carousel({
   slides
 }) {
   const [current, setCurrent] = useState(0);
-
-  const handlePreviousClick = () => {
-    const previous = current - 1;
-    setCurrent(previous < 0 ? slides.length - 1 : previous);
-  };
-
-  const handleNextClick = () => {
-    const next = current + 1;
-    setCurrent(next === slides.length ? 0 : next);
-  };
 
   const handleSlideClick = (index) => {
     if (current !== index) {
@@ -172,14 +144,6 @@ export default function Carousel({
             handleSlideClick={handleSlideClick} />
         ))}
       </ul>
-      <div className="absolute flex justify-center w-full top-[calc(100%+1rem)]">
-        <CarouselControl
-          type="previous"
-          title="Go to previous slide"
-          handleClick={handlePreviousClick} />
-
-        <CarouselControl type="next" title="Go to next slide" handleClick={handleNextClick} />
-      </div>
     </div>
   );
 }
