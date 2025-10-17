@@ -1,55 +1,90 @@
 import { Component } from '@angular/core';
 
-export interface Category {
-  name: string;
-  description: string;
-}
-
 @Component({
   selector: 'app-categorie-table',
   templateUrl: './categorie-table.component.html',
-  styleUrls: ['./categorie-table.component.css']
+  styleUrls: ['./categorie-table.component.css'],
 })
 export class CategorieTableComponent {
-  showModal = false;
-  isEditMode = false;
-  categories: Category[] = [
+  // ✅ Données de test
+  categories = [
     { name: 'Furniture', description: 'Tables, chairs, and sofas' },
-    { name: 'Lighting', description: 'Lamps, bulbs, and chandeliers' },
-    { name: 'Decor', description: 'Wall art and decorative pieces' }
+    { name: 'Lighting', description: 'Lamps and bulbs' },
+    { name: 'Decor', description: 'Wall art and plants' },
   ];
-  editedCategory: Category = { name: '', description: '' };
-  categoryToEdit: Category | null = null;
 
+  // ✅ États pour les modals
+  showModal: boolean = false;
+  showDeleteConfirm: boolean = false;
+  showEditModal: boolean = false; // Ajout pour le modal de modification
+
+  // ✅ Variables pour ajout/édition
+  newCategoryName: string = '';
+  newCategoryDescription: string = '';
+  categoryToEdit: any = null; // Ajout pour la catégorie en cours de modification
+
+  // ✅ Catégorie sélectionnée pour suppression
+  selectedCategory: any = null;
+
+  // --- 📦 Fonctions pour le modal d’ajout ---
   openAddModal() {
-    this.isEditMode = false;
-    this.editedCategory = { name: '', description: '' };
-    this.showModal = true;
-  }
-
-  openEditModal(category: Category) {
-    this.isEditMode = true;
-    this.categoryToEdit = category;
-    this.editedCategory = { ...category };
     this.showModal = true;
   }
 
   closeModal() {
     this.showModal = false;
-    this.categoryToEdit = null;
+    this.newCategoryName = '';
+    this.newCategoryDescription = '';
   }
 
   saveCategory() {
-    if (this.isEditMode && this.categoryToEdit) {
-      // Update existing category
-      const index = this.categories.findIndex(c => c === this.categoryToEdit);
-      if (index !== -1) {
-        this.categories[index] = this.editedCategory;
-      }
-    } else {
-      // Add new category
-      this.categories.push(this.editedCategory);
+    if (this.newCategoryName.trim()) {
+      this.categories.push({
+        name: this.newCategoryName,
+        description: this.newCategoryDescription,
+      });
+      this.closeModal();
     }
-    this.closeModal();
+  }
+
+  // --- ✏️ Fonctions pour le modal de modification ---
+  openEditModal(category: any) {
+    this.categoryToEdit = { ...category }; // Crée une copie
+    this.showEditModal = true;
+  }
+
+  closeEditModal() {
+    this.showEditModal = false;
+    this.categoryToEdit = null;
+  }
+
+  saveEdit() {
+    if (this.categoryToEdit) {
+      const index = this.categories.findIndex(c => c.name === this.categoryToEdit.name);
+      if (index !== -1) {
+        this.categories[index] = this.categoryToEdit;
+      }
+      this.closeEditModal();
+    }
+  }
+
+  // --- 🗑️ Fonctions pour le modal de suppression ---
+  openDeleteModal(category: any) {
+    this.selectedCategory = category;
+    this.showDeleteConfirm = true;
+  }
+
+  closeDeleteModal() {
+    this.showDeleteConfirm = false;
+  }
+
+  confirmDelete() {
+    if (this.selectedCategory) {
+      this.categories = this.categories.filter(
+        (c) => c !== this.selectedCategory
+      );
+      this.showDeleteConfirm = false;
+      this.selectedCategory = null;
+    }
   }
 }

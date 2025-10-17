@@ -1,0 +1,122 @@
+<div class="p-6 space-y-8">
+  <!-- Profile Header -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+    <div class="flex flex-col sm:flex-row items-center sm:justify-between">
+      <div class="flex items-center space-x-4">
+        <img [src]="user.photo" alt="Profile" class="w-16 h-16 rounded-full object-cover" />
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">{{ user.firstName }} {{ user.lastName }}</h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            {{ user.job }} | {{ user.location }}
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3 mt-4 sm:mt-0">
+        <a *ngFor="let link of user.socials | keyvalue" [href]="link.value" class="w-9 h-9 flex items-center justify-center border border-gray-300 rounded-full text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
+          <i [class]="'fab fa-' + link.key"></i>
+        </a>
+        <button (click)="edit('Profile')" class="flex items-center gap-2 px-4 py-2 border rounded-lg text-sm text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-gray-700">
+          <i class="fas fa-pen"></i> Edit
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Personal Information -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-md font-semibold text-gray-900 dark:text-white">Personal Information</h3>
+      <button (click)="edit('Personal Information')" class="flex items-center gap-2 px-3 py-1 border rounded-lg text-sm text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-gray-700">
+        <i class="fas fa-pen"></i> Edit
+      </button>
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-6 text-sm text-gray-700 dark:text-gray-300">
+      <div>
+        <p class="font-semibold">First Name</p>
+        <p>{{ user.firstName }}</p>
+      </div>
+      <div>
+        <p class="font-semibold">Last Name</p>
+        <p>{{ user.lastName }}</p>
+      </div>
+      <div>
+        <p class="font-semibold">Email address</p>
+        <p>{{ user.email }}</p>
+      </div>
+      <div>
+        <p class="font-semibold">Phone</p>
+        <p>{{ user.phone }}</p>
+      </div>
+      <div class="sm:col-span-2">
+        <p class="font-semibold">Bio</p>
+        <p>{{ user.bio }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Address Section -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-md font-semibold text-gray-900 dark:text-white">Address</h3>
+      <button (click)="edit('Address')" class="flex items-center gap-2 px-3 py-1 border rounded-lg text-sm text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-gray-700">
+        <i class="fas fa-pen"></i> Edit
+      </button>
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-6 text-sm text-gray-700 dark:text-gray-300">
+      <div>
+        <p class="font-semibold">Country</p>
+        <p>{{ user.country }}</p>
+      </div>
+      <div>
+        <p class="font-semibold">City/State</p>
+        <p>{{ user.city }}</p>
+      </div>
+      <div>
+        <p class="font-semibold">Postal Code</p>
+        <p>{{ user.postalCode }}</p>
+      </div>
+      <div>
+        <p class="font-semibold">TAX ID</p>
+        <p>{{ user.taxId }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div *ngIf="isModalOpen" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-xl shadow-lg w-full max-w-lg p-6 relative">
+    <h2 class="text-xl font-semibold mb-4">Edit {{ editSection }}</h2>
+
+    <!-- Formulaire -->
+    <div class="space-y-4 text-sm">
+      <div>
+        <label class="block font-semibold mb-1">First Name</label>
+        <input [(ngModel)]="editableUser.firstName" class="w-full border rounded-md p-2 focus:border-blue-400 outline-none" />
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Last Name</label>
+        <input [(ngModel)]="editableUser.lastName" class="w-full border rounded-md p-2 focus:border-blue-400 outline-none" />
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Email</label>
+        <input [(ngModel)]="editableUser.email" class="w-full border rounded-md p-2 focus:border-blue-400 outline-none" />
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Phone</label>
+        <input [(ngModel)]="editableUser.phone" class="w-full border rounded-md p-2 focus:border-blue-400 outline-none" />
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Bio</label>
+        <textarea [(ngModel)]="editableUser.bio" class="w-full border rounded-md p-2 focus:border-blue-400 outline-none"></textarea>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-3 mt-6">
+      <button (click)="closeModal()" class="px-4 py-2 border rounded-lg text-gray-600 hover:bg-gray-100">Cancel</button>
+      <button (click)="saveChanges()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Save</button>
+    </div>
+  </div>
+</div>

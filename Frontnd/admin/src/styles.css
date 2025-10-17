@@ -13,3 +13,10 @@ body {
   display: flex;
   width: 100%;
 }
+
+.active {
+    @apply bg-indigo-50 dark:bg-gray-700 text-indigo-600 dark:text-indigo-400;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
