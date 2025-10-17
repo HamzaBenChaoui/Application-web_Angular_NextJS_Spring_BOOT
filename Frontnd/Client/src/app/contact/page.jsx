@@ -17,23 +17,23 @@ export default function ContactForm() {
     const newErrors = {};
     
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = 'Le nom est requis';
     }
     
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = 'L\'email est requis';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = 'L\'email est invalide';
     }
     
     if (!formData.subject.trim()) {
-      newErrors.subject = 'Subject is required';
+      newErrors.subject = 'Le sujet est requis';
     }
     
     if (!formData.message.trim()) {
-      newErrors.message = 'Message is required';
+      newErrors.message = 'Le message est requis';
     } else if (formData.message.length < 10) {
-      newErrors.message = 'Message must be at least 10 characters';
+      newErrors.message = 'Le message doit contenir au moins 10 caractères';
     }
     
     setErrors(newErrors);
@@ -43,9 +43,9 @@ export default function ContactForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      console.log('Contact data:', formData);
+      console.log('Données de contact:', formData);
       setIsSubmitted(true);
-      // Handle contact form submission here
+      // Gérer l'envoi du formulaire de contact ici
     }
   };
 
@@ -65,15 +65,15 @@ export default function ContactForm() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-[#302652] mb-2">Message Sent!</h2>
+          <h2 className="text-2xl font-bold text-[#302652] mb-2">Message Envoyé !</h2>
           <p className="text-gray-600 mb-6">
-            Thank you for contacting us. We'll get back to you within 24 hours.
+            Merci de nous avoir contactés. Nous vous répondrons dans les 24 heures.
           </p>
           <button
             onClick={() => setIsSubmitted(false)}
             className="bg-gradient-to-r from-[#bb00cc] to-[#302652] text-white py-3 px-6 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
           >
-            Send Another Message
+            Envoyer un autre message
           </button>
         </div>
       </div>
@@ -84,18 +84,18 @@ export default function ContactForm() {
     <div className="min-h-screen bg-gradient-to-br from-[#302652] to-[#1a1a2e] py-12 px-4">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-4">Contact Us</h1>
+          <h1 className="text-4xl font-bold text-white mb-4">Contactez-nous</h1>
           <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-            Have questions about our motorcycles or bicycles? We're here to help! 
-            Get in touch with our expert team.
+            Vous avez des questions sur nos motos ou vélos ? Nous sommes là pour vous aider !
+            Contactez notre équipe d'experts.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Contact Information */}
+          {/* Informations de contact */}
           <div className="lg:col-span-1 space-y-6">
             <div className="bg-white rounded-2xl p-6 shadow-lg">
-              <h3 className="text-xl font-semibold text-[#302652] mb-6">Get in Touch</h3>
+              <h3 className="text-xl font-semibold text-[#302652] mb-6">Nous Contacter</h3>
               
               <div className="space-y-4">
                 <div className="flex items-start">
@@ -106,8 +106,8 @@ export default function ContactForm() {
                     </svg>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900">Address</h4>
-                    <p className="text-gray-600">123 Ride Street, Motor City, MC 12345</p>
+                    <h4 className="font-semibold text-gray-900">Adresse</h4>
+                    <p className="text-gray-600">123 Rue du Vélo, Ville Moto, VM 12345</p>
                   </div>
                 </div>
 
@@ -118,7 +118,7 @@ export default function ContactForm() {
                     </svg>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900">Phone</h4>
+                    <h4 className="font-semibold text-gray-900">Téléphone</h4>
                     <p className="text-gray-600">+1 (555) 123-RIDE</p>
                   </div>
                 </div>
@@ -138,34 +138,34 @@ export default function ContactForm() {
             </div>
 
             <div className="bg-white rounded-2xl p-6 shadow-lg">
-              <h4 className="font-semibold text-[#302652] mb-4">Business Hours</h4>
+              <h4 className="font-semibold text-[#302652] mb-4">Heures d'ouverture</h4>
               <div className="space-y-2 text-sm text-gray-600">
                 <div className="flex justify-between">
-                  <span>Monday - Friday</span>
-                  <span>9:00 AM - 7:00 PM</span>
+                  <span>Lundi - Vendredi</span>
+                  <span>9h00 - 19h00</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Saturday</span>
-                  <span>10:00 AM - 6:00 PM</span>
+                  <span>Samedi</span>
+                  <span>10h00 - 18h00</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Sunday</span>
-                  <span>12:00 PM - 5:00 PM</span>
+                  <span>Dimanche</span>
+                  <span>12h00 - 17h00</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Contact Form */}
+          {/* Formulaire de contact */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-2xl shadow-2xl p-8">
-              <h3 className="text-2xl font-bold text-[#302652] mb-6">Send us a Message</h3>
+              <h3 className="text-2xl font-bold text-[#302652] mb-6">Envoyez-nous un message</h3>
               
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Full Name *
+                      Nom complet *
                     </label>
                     <input
                       type="text"
@@ -175,7 +175,7 @@ export default function ContactForm() {
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#bb00cc] focus:border-transparent transition-all ${
                         errors.name ? 'border-red-500' : 'border-gray-300'
                       }`}
-                      placeholder="Your full name"
+                      placeholder="Votre nom complet"
                     />
                     {errors.name && (
                       <p className="text-red-500 text-sm mt-1">{errors.name}</p>
@@ -184,7 +184,7 @@ export default function ContactForm() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email Address *
+                      Adresse email *
                     </label>
                     <input
                       type="email"
@@ -194,7 +194,7 @@ export default function ContactForm() {
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#bb00cc] focus:border-transparent transition-all ${
                         errors.email ? 'border-red-500' : 'border-gray-300'
                       }`}
-                      placeholder="your.email@example.com"
+                      placeholder="votre.email@exemple.com"
                     />
                     {errors.email && (
                       <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -204,7 +204,7 @@ export default function ContactForm() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Subject *
+                    Sujet *
                   </label>
                   <input
                     type="text"
@@ -214,7 +214,7 @@ export default function ContactForm() {
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#bb00cc] focus:border-transparent transition-all ${
                       errors.subject ? 'border-red-500' : 'border-gray-300'
                     }`}
-                    placeholder="What is this regarding?"
+                    placeholder="De quoi s'agit-il ?"
                   />
                   {errors.subject && (
                     <p className="text-red-500 text-sm mt-1">{errors.subject}</p>
@@ -223,7 +223,7 @@ export default function ContactForm() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Preferred Contact Method
+                    Méthode de contact préférée
                   </label>
                   <div className="flex space-x-4">
                     {['email', 'phone'].map((method) => (
@@ -236,7 +236,9 @@ export default function ContactForm() {
                           onChange={handleChange}
                           className="w-4 h-4 text-[#bb00cc] border-gray-300 focus:ring-[#bb00cc]"
                         />
-                        <span className="ml-2 text-gray-700 capitalize">{method}</span>
+                        <span className="ml-2 text-gray-700 capitalize">
+                          {method === 'email' ? 'email' : 'téléphone'}
+                        </span>
                       </label>
                     ))}
                   </div>
@@ -254,7 +256,7 @@ export default function ContactForm() {
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#bb00cc] focus:border-transparent transition-all resize-none ${
                       errors.message ? 'border-red-500' : 'border-gray-300'
                     }`}
-                    placeholder="Tell us how we can help you..."
+                    placeholder="Dites-nous comment nous pouvons vous aider..."
                   />
                   {errors.message && (
                     <p className="text-red-500 text-sm mt-1">{errors.message}</p>
@@ -265,7 +267,7 @@ export default function ContactForm() {
                   type="submit"
                   className="w-full bg-[#bb00cc] text-white py-4 px-6 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 text-lg"
                 >
-                  Send Message
+                  Envoyer le message
                 </button>
               </form>
             </div>
