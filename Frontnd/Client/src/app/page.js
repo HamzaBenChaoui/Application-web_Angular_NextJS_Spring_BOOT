@@ -7,6 +7,8 @@ import "./globals.css";
 import Card from "./components/Card";
 import { properties } from "./constants/data";
 import VillesMaroc from "./location/VillesMaroc";
+import { LensDemo } from "./components/LensDemo";
+
 
 
 export default function HomePage() {
@@ -21,8 +23,10 @@ export default function HomePage() {
           <Card data={item} key={item.id} />
         ))}
       </div>
+
       <Actualise />
       <Footer />
+   
     </div>
   );
 }
