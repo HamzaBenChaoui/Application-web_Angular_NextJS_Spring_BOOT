@@ -6,12 +6,15 @@ import CarRentalHero from "./page_rentaal/CarRentalHero";
 import "./globals.css";
 import Card from "./components/Card";
 import { properties } from "./constants/data";
+import VillesMaroc from "./location/VillesMaroc";
+
 
 export default function HomePage() {
   return (
     <div className="text-center mt-20">
       <CarRentalHero />
       <NewWaySection/>
+            <VillesMaroc />
       <RentabilisezBys />
       <div className="properties">
         {properties.map((item) => (
