@@ -1,9 +1,11 @@
+import BlogCard from "../components/blogCard";
 import BlogFooter from "../components/BlogFooter";
 import BlogsCarousel from "../components/BlogsCarousel";
+import { blogPosts } from "../constants/blogs-data";
 
 export default function BlogsPage() {
   return (
-    <div className="relative">
+    <div className="relative min-h-screen">
       {/* Header with background image */}
       <div 
         className="relative h-[500px] bg-cover bg-center bg-no-repeat flex items-center justify-center"
@@ -23,14 +25,19 @@ export default function BlogsPage() {
         </div>
       </div>
 
-      {/* Carousel superimposed on top of header */}
-      <div className="absolute left-8 top-[360px] w-full max-w-2xl px-4 sm:px-6 lg:px-8 z-30">
+      {/* Carousel superimposed on top of header - WIDER VERSION */}
+      <div className="w-full px-4 sm:px-6 lg:px-8 -mt-10 relative z-30">
         <BlogsCarousel />
-      </div>
-
-      {/* Spacer to push content below */}
-      <div className="pt-80">
-        {/* This creates space for the superimposed carousel */}
+      </div> 
+     
+      {/* Blog Cards Section */}
+      <div className="container mx-auto px-4 mt-10">
+        {/* Blog Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {blogPosts.map((post) => (
+            <BlogCard key={post.id} post={post} />
+          ))}
+        </div>
       </div>
 
     </div>

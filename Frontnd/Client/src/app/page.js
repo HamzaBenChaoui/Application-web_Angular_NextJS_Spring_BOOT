@@ -25,12 +25,8 @@ export default function HomePage() {
       </div>
 
       <Actualise />
-<<<<<<< HEAD
-     
-=======
-      <Footer />
+    
    
->>>>>>> fa4d198 (add file lensdemo)
     </div>
   );
 }
