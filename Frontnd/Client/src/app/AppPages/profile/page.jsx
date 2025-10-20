@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Footer from '../components/footer/Footer';
+import Footer from '../../components/footer/Footer';
 
 const GlassCard = ({ children, className = "" }) => (
   <div className={`bg-white/80 backdrop-blur-sm border border-white/30 rounded-2xl shadow-lg ${className}`}>
