@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import FloatingDock2 from './FloatingDock2';
+import FloatingDock2 from '../FloatingDock2';
+
 
 const BlogFooter = () => {
     return (

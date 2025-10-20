@@ -5,8 +5,9 @@ import "./globals.css";
 import Navbar from "./components/navbar/page";
 import { usePathname } from "next/navigation";
 import BlogNavBar from "./components/blogComponents/BlogNavBar";
-import BlogFooter from "./components/BlogFooter";
+
 import Footer from "./components/footer/Footer";
+import BlogFooter from "./components/blogComponents/BlogFooter";
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
