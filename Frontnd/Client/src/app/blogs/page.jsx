@@ -1,7 +1,7 @@
-import BlogCard from "../components/blogCard";
+import BlogCard from "../components/blogComponents/blogCard";
 import BlogFooter from "../components/BlogFooter";
-import BlogsCarousel from "../components/BlogsCarousel";
-import { blogPosts } from "../constants/blogs-data";
+import BlogsCarousel from "../components/blogComponents/BlogsCarousel";
+import { blogPosts } from "../data/blogs-data";
 
 export default function BlogsPage() {
   return (

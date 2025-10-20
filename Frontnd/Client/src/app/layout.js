@@ -4,9 +4,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import "./globals.css";
 import Navbar from "./components/navbar/page";
 import { usePathname } from "next/navigation";
-import BlogNavBar from "./components/BlogNavBar";
+import BlogNavBar from "./components/blogComponents/BlogNavBar";
 import BlogFooter from "./components/BlogFooter";
-import Footer from "./components/Footer";
+import Footer from "./components/footer/Footer";
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();

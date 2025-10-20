@@ -1,12 +1,12 @@
-import Actualise from "./components/Actualise";
-import Footer from "./components/Footer";
-import RentabilisezBys from "./components/RentabilisezBys";
-import NewWaySection from "./landingpageComponent/page";
-import CarRentalHero from "./page_rentaal/CarRentalHero";
+import Actualise from "./components/HomePageComponents/Actualise";
+import Footer from "./components/footer/Footer";
+import RentabilisezBys from "./components/HomePageComponents/RentabilisezBys";
+import NewWaySection from "./components/HomePageComponents/landingpageComponent/page";
+import CarRentalHero from "./components/HomePageComponents/page_rentaal/CarRentalHero";
 import "./globals.css";
-import Card from "./components/Card";
-import { properties } from "./constants/data";
-import VillesMaroc from "./location/VillesMaroc";
+import Card from "./components/HomePageComponents/Card";
+import { properties } from "./data/data";
+import VillesMaroc from "./components/HomePageComponents/location/VillesMaroc";
 import { LensDemo } from "./components/LensDemo";
 
 

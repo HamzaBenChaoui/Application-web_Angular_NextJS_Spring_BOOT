@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
-import Footer from '../components/Footer';
+import Footer from '../components/footer/Footer';
 
 // Données fictives pour les produits
 const mockProducts = [

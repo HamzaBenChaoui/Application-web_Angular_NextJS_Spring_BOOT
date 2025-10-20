@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { MapPin, Calendar } from "lucide-react";
-import CarList from "../components/CarList";
+import CarList from "../../CarList";
 
 export default function CarRentalHero() {
   const [location, setLocation] = useState("");
