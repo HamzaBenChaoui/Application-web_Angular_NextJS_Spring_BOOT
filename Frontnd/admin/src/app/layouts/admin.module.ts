@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ComponentsModule } from '../components/components.module';
@@ -22,13 +22,21 @@ import { FormsModule } from '@angular/forms';
     CategorieTableComponent,
     SidebarComponent,
     NavbarComponent,
-    FooterComponent
+    FooterComponent,
   ],
   imports: [
     CommonModule,
     RouterModule,
     ComponentsModule,
     FormsModule
-  ]
+  ],
+  exports: [
+    AdminComponent,
+    DashboardComponent,
+    UserProfilComponent,
+    ProductTableComponent,
+    CategorieTableComponent,
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AdminModule { }

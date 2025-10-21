@@ -3,10 +3,12 @@
     <div class="flex items-center justify-between mb-6">
       <div>
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Products</h2>
-        <p class="text-sm text-gray-500 dark:text-gray-400">A list of all the products in your account.</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          A list of all the products in your account.
+        </p>
       </div>
-      <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
-        Add product
+      <button (click)="openAddProductModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium">
+        Add Product
       </button>
     </div>
 
@@ -17,26 +19,17 @@
             <th class="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Name</th>
             <th class="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Price</th>
             <th class="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">Stock</th>
-            <th class="px-4 py-3 text-right text-sm font-semibold text-gray-900 dark:text-white"></th>
+            <th class="px-4 py-3 text-right text-sm font-semibold text-gray-900 dark:text-white">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-          <tr>
-            <td class="px-4 py-4 text-sm font-medium text-gray-900 dark:text-white">Product 1</td>
-            <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">$100</td>
-            <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">10</td>
+          <tr *ngFor="let product of products">
+            <td class="px-4 py-4 text-sm font-medium text-gray-900 dark:text-white">{{ product.name }}</td>
+            <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">${{ product.price }}</td>
+            <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">{{ product.stock }}</td>
             <td class="px-4 py-4 text-right text-sm">
-              <a href="#" class="text-indigo-600 hover:text-indigo-900 font-medium">Edit</a>
-              <a href="#" class="text-red-600 hover:text-red-900 font-medium ml-4">Delete</a>
-            </td>
-          </tr>
-          <tr>
-            <td class="px-4 py-4 text-sm font-medium text-gray-900 dark:text-white">Product 2</td>
-            <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">$200</td>
-            <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">5</td>
-            <td class="px-4 py-4 text-right text-sm">
-              <a href="#" class="text-indigo-600 hover:text-indigo-900 font-medium">Edit</a>
-              <a href="#" class="text-red-600 hover:text-red-900 font-medium ml-4">Delete</a>
+              <button (click)="openEditModal(product)" class="text-indigo-600 hover:text-indigo-900 font-medium">Edit</button>
+              <button (click)="openDeleteModal(product)" class="text-red-600 hover:text-red-900 font-medium ml-4">Delete</button>
             </td>
           </tr>
         </tbody>
@@ -44,3 +37,87 @@
     </div>
   </div>
 </div>
+
+<!-- Modal de modification de produit -->
+<div *ngIf="showEditModal" class="fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center transition-opacity duration-300">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md transform transition-all duration-300 scale-95">
+    <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-3">
+      <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Edit Product</h3>
+      <button (click)="closeEditModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+    </div>
+    <form *ngIf="productToEdit" (ngSubmit)="saveEdit()" class="mt-4">
+      <div class="mb-4">
+        <label for="edit-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+        <input type="text" id="edit-name" [(ngModel)]="productToEdit.name" name="name" class="w-full px-3 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-indigo-500">
+      </div>
+      <div class="mb-4">
+        <label for="edit-price" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Price</label>
+        <input type="number" id="edit-price" [(ngModel)]="productToEdit.price" name="price" class="w-full px-3 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-indigo-500">
+      </div>
+      <div class="mb-6">
+        <label for="edit-stock" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Stock</label>
+        <input type="number" id="edit-stock" [(ngModel)]="productToEdit.stock" name="stock" class="w-full px-3 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-indigo-500">
+      </div>
+      <div class="flex justify-end gap-4">
+        <button type="button" (click)="closeEditModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:bg-gray-600">Cancel</button>
+        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Ajouter Produit -->
+<div *ngIf="showAddProductModal" class="fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center transition-opacity duration-300">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md transform transition-all duration-300 scale-95">
+    <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-3">
+      <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Add New Product</h3>
+      <button (click)="closeAddProductModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+    </div>
+    <form class="mt-4">
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Product Name</label>
+        <input type="text" placeholder="e.g. Apple MacBook Pro 17'" class="w-full px-3 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-indigo-500">
+      </div>
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Price</label>
+          <input type="number" placeholder="$2999" class="w-full px-3 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-indigo-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Stock</label>
+          <input type="number" placeholder="99" class="w-full px-3 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-indigo-500">
+        </div>
+      </div>
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
+        <select class="w-full px-3 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-indigo-500">
+          <option selected>Select category</option>
+          <option value="TV">TV/Monitors</option>
+          <option value="PC">PC</option>
+          <option value="GA">Gaming/Console</option>
+          <option value="PH">Phones</option>
+        </select>
+      </div>
+      <div class="flex justify-end gap-4">
+        <button type="button" (click)="closeAddProductModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:bg-gray-600">Cancel</button>
+        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Add Product</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ✅ Modal de confirmation de suppression -->
+<div *ngIf="showDeleteConfirm" class="fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center transition-opacity duration-300">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md text-center transform transition-all duration-300 scale-95">
+    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Are you sure you want to delete <span class="font-semibold text-red-600">{{ selectedProduct?.name }}</span>?</h3>
+    <div class="flex justify-center gap-4 mt-6">
+      <button (click)="closeDeleteModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:bg-gray-600">Cancel</button>
+      <button (click)="confirmDelete()" class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Yes, Delete</button>
+    </div>
+  </div>
+</div>
+
