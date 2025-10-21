@@ -1,0 +1,49 @@
+/* Styles pour le conteneur principal */
+.wrapper {
+  display: flex;
+  width: 100%;
+  height: 100vh; /* Pleine hauteur de l'écran */
+  background-color: #f4f7f6; /* Couleur de fond générale */
+}
+
+/* Le panneau principal qui contient la navbar, le contenu et le footer */
+.main-panel {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Prend tout l'espace restant */
+  height: 100vh; /* Pleine hauteur */
+  overflow-y: auto; /* Permet de faire défiler le contenu si nécessaire */
+  background-color: #f4f7f6;
+}
+
+/* La zone de contenu principale */
+main.content {
+  padding: 2rem;
+  flex-grow: 1; /* Pousse le footer vers le bas */
+}
+
+/* Ciblage des composants pour leur donner un style de base dans cette mise en page */
+
+/* La sidebar aura une largeur fixe et un fond sombre */
+::ng-deep app-sidebar {
+  flex-shrink: 0; /* Empêche la sidebar de rétrécir */
+  width: 260px;
+  background: #1e1e2f;
+  color: white;
+  box-shadow: 5px 0px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* La navbar aura un fond blanc et une ombre subtile */
+::ng-deep app-navbar {
+  background: #ffffff;
+  box-shadow: 0 1px 15px rgba(0,0,0,.04), 0 1px 6px rgba(0,0,0,.04);
+  z-index: 10;
+}
+
+/* Le footer aura un fond blanc et une bordure supérieure */
+::ng-deep app-footer {
+  background: #ffffff;
+  border-top: 1px solid #dee2e6;
+  padding: 1rem 2rem;
+  flex-shrink: 0; /* Empêche le footer de rétrécir */
+}
