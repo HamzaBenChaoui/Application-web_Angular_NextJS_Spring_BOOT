@@ -92,6 +92,10 @@ export default function CarRentalHero() {
       </div>
     </div>
     <CarList />
+    <div>
+<p>&nbsp;</p>
+
+    </div>
     </>
   );
 }

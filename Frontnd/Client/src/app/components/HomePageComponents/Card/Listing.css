@@ -1,7 +1,8 @@
 .listing {
   width: 25%;
-  min-width: 300px;
-  max-width: 400px;
+  /* MODIFIÉ : J'ai réduit la taille minimale et maximale */
+  min-width: 280px;
+  max-width: 340px;
   position: relative;
   margin: 20px;
   cursor: pointer;

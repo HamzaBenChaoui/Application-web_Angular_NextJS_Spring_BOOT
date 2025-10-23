@@ -1,11 +1,17 @@
 "use client";
 
 import Link from 'next/link';
-import { useState, useEffect, useRef } from 'react';
-import Footer from '../../components/footer/Footer';
+import { useState, useEffect } from 'react'; // 'useRef' n'était pas utilisé, je l'ai enlevé
+// import Footer from '../../components/footer/Footer'; // Décommentez si vous l'utilisez
+
+// --- AJOUTÉ ---
+// 1. Importer le Modal et l'icône de paiement
+import CheckoutModal from '@/components/CheckoutModal'; // ATTENTION: J'ai corrigé ce chemin
+import { CreditCardIcon } from '@heroicons/react/24/outline'; // Icône pour le paiement
 
 // Données fictives pour les produits
 const mockProducts = [
+  // ... (Vos données produits restent identiques)
   {
     id: 1,
     name: 'Ducati Panigale V4',
@@ -123,13 +129,14 @@ const mockProducts = [
 const motorcycleTypes = ['Tous', 'sport', 'cruiser', 'naked', 'adventure'];
 const bicycleTypes = ['Tous', 'route', 'mountain', 'endurance', 'gravel'];
 
+// ... (Le composant GlassCard reste identique)
 const GlassCard = ({ children, className = "" }) => (
   <div className={`bg-white/80 backdrop-blur-sm border border-white/30 rounded-xl shadow-lg ${className}`}>
     {children}
   </div>
 );
 
-// Composant Curseur de Plage de Prix
+// ... (Le composant PriceRangeSlider reste identique)
 const PriceRangeSlider = ({ minPrice, maxPrice, value, onChange }) => {
   const [localValue, setLocalValue] = useState(value);
   
@@ -208,7 +215,12 @@ export default function ProductsPage() {
   const [likedProducts, setLikedProducts] = useState(new Set());
   const [isMounted, setIsMounted] = useState(false);
 
-  // Initialiser uniquement côté client
+  // --- AJOUTÉ ---
+  // 2. States pour gérer le modal de paiement
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  // ... (useEffect pour initialiser les produits reste identique)
   useEffect(() => {
     setIsMounted(true);
     setProducts(mockProducts);
@@ -224,6 +236,7 @@ export default function ProductsPage() {
     }));
   }, []);
 
+  // ... (useEffect pour filtrer les produits reste identique)
   useEffect(() => {
     if (!isMounted) return;
     
@@ -301,8 +314,21 @@ export default function ProductsPage() {
       minimumFractionDigits: 0
     }).format(price);
   };
+  
+  // --- AJOUTÉ ---
+  // 3. Fonctions pour ouvrir et fermer le modal
+  const handleOpenCheckout = (product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
 
-  // Ne rien afficher tant que le composant n'est pas monté côté client
+  const handleCloseCheckout = () => {
+    setIsModalOpen(false);
+    setSelectedProduct(null); // Réinitialiser le produit sélectionné
+  };
+
+
+  // ... (Code de chargement reste identique)
   if (!isMounted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50">
@@ -315,14 +341,14 @@ export default function ProductsPage() {
     );
   }
 
-  // Calculer les prix min et max
+  // ... (Calcul des prix min/max reste identique)
   const minPrice = 0;
   const maxPrice = Math.max(...products.map(product => product.price));
   const defaultMaxPrice = Math.ceil(maxPrice / 1000) * 1000;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50">
-      {/* Section Hero */}
+      {/* ... (Section Hero reste identique) */}
       <div className="relative bg-gradient-to-r from-[#302652] to-[#1a1a2e] text-white py-20 overflow-hidden">
         <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0" style={{
@@ -344,9 +370,9 @@ export default function ProductsPage() {
       {/* Filtres et Produits */}
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Grille de Produits - Maintenant à gauche */}
+          {/* Grille de Produits */}
           <div className="flex-1">
-            {/* En-tête des Résultats */}
+            {/* ... (En-tête des Résultats reste identique) */}
             <div className="flex justify-between items-center mb-8">
               <p className="text-gray-600 text-lg font-medium">
                 Affichage de <span className="text-[#302652] font-bold">{filteredProducts.length}</span> sur{" "}
@@ -386,6 +412,7 @@ export default function ProductsPage() {
 
             {/* Produits */}
             {filteredProducts.length === 0 ? (
+              // ... (Code "Aucun produit" reste identique)
               <div className="text-center py-16">
                 <svg className="w-16 h-16 text-gray-400 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -404,7 +431,7 @@ export default function ProductsPage() {
                     key={product.id}
                     className="group bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col"
                   >
-                    {/* Section Image */}
+                    {/* ... (Section Image reste identique) */}
                     <div className="relative h-48 overflow-hidden">
                       <img
                         src={product.image}
@@ -424,7 +451,7 @@ export default function ProductsPage() {
                       </span>
                     </div>
                     
-                    {/* Section Contenu */}
+                    {/* ... (Section Contenu reste identique) */}
                     <div className="p-6 flex flex-col flex-grow">
                       <div className="flex justify-between items-start mb-4">
                         <h3 className="text-xl font-bold text-gray-900 pr-2 line-clamp-2 flex-1">
@@ -461,15 +488,31 @@ export default function ProductsPage() {
                         ))}
                       </div>
 
+                      {/* --- MODIFIÉ --- */}
+                      {/* 4. Modification de la barre de boutons */}
                       <div className="flex space-x-3 mt-auto pt-4">
-                        <Link href="/productPage" >
-                        <button className="flex-1 bg-gradient-to-r from-[#bb00cc] to-purple-600 text-white py-3 px-6 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center">
-                          Voir les Détails
-                        </button>
+                        {/* Bouton Voir les Détails */}
+                        <Link href="/productPage" className="flex-1">
+                          <button className="w-full bg-gradient-to-r from-[#bb00cc] to-purple-600 text-white py-3 px-6 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center">
+                            Voir les Détails
+                          </button>
                         </Link>
+                        
+                        {/* --- AJOUTÉ --- */}
+                        {/* Nouveau Bouton Payer */}
+                        <button 
+                          className="p-3 border border-gray-300 rounded-xl text-green-600 hover:bg-gray-50 hover:border-green-400 transition-all duration-300 hover:scale-105 flex items-center justify-center"
+                          onClick={() => handleOpenCheckout(product)}
+                          title="Payer maintenant"
+                        >
+                          <CreditCardIcon className="w-6 h-6" />
+                        </button>
+                        
+                        {/* Bouton Wishlist (Like) */}
                         <button 
                           className="p-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-300 hover:scale-105 flex items-center justify-center"
                           onClick={() => toggleLike(product.id)}
+                          title="Ajouter aux favoris"
                         >
                           <svg 
                             className={`w-6 h-6 transition-all duration-300 ${
@@ -492,7 +535,7 @@ export default function ProductsPage() {
             )}
           </div>
 
-          {/* Barre latérale des Filtres - Maintenant à droite et plus petite */}
+          {/* ... (Barre latérale des Filtres reste identique) */}
           <div className="lg:w-64 space-y-4">
             {/* Recherche */}
             <GlassCard className="p-4">
@@ -595,9 +638,19 @@ export default function ProductsPage() {
               </select>
             </GlassCard>
           </div>
+
         </div>
       </div>
      
+      {/* --- AJOUTÉ --- */}
+      {/* 5. Le composant Modal est maintenant rendu ici */}
+      <CheckoutModal
+        isOpen={isModalOpen}
+        onClose={handleCloseCheckout}
+        // Nous passons le prix du produit sélectionné au modal
+        totalAmount={selectedProduct ? selectedProduct.price : 0}
+      />
+
     </div>
   );
 }
