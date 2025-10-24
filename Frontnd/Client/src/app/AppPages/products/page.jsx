@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react'; // 'useRef' n'était pas utilisé, je l'ai enlevé
+import { useState, useEffect } from 'react';
 // import Footer from '../../components/footer/Footer'; // Décommentez si vous l'utilisez
 
 // --- AJOUTÉ ---
@@ -183,7 +183,7 @@ const PriceRangeSlider = ({ minPrice, maxPrice, value, onChange }) => {
           className="absolute top-1/2 left-0 w-full h-2 -translate-y-1/2 opacity-0 cursor-pointer z-20"
         />
         
-        {/* Curseur personnalisé - Positionné correctement */}
+        {/* Curseur personnalisé - Positionné correctly */}
         <div 
           className="absolute top-1/2 w-4 h-4 bg-white border-2 border-[#bb00cc] rounded-full shadow-lg transform -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform duration-200 z-10"
           style={{ 
@@ -263,7 +263,7 @@ export default function ProductsPage() {
         filtered.sort((a, b) => a.price - b.price);
         break;
       case 'price-high':
-        filtered.sort((a, b) => b.price - a.price);
+        filtered.sort((a, b) => b.price - b.price);
         break;
       case 'name':
         filtered.sort((a, b) => a.name.localeCompare(b.name));
@@ -491,8 +491,10 @@ export default function ProductsPage() {
                       {/* --- MODIFIÉ --- */}
                       {/* 4. Modification de la barre de boutons */}
                       <div className="flex space-x-3 mt-auto pt-4">
-                        {/* Bouton Voir les Détails */}
-                        <Link href="/productPage" className="flex-1">
+                        
+                        {/* --- MODIFICATION DEMANDÉE --- */}
+                        {/* On utilise un template literal (les `) pour passer l'ID du produit dans l'URL. */}
+                        <Link href={`/productPage/${product.id}`} className="flex-1">
                           <button className="w-full bg-gradient-to-r from-[#bb00cc] to-purple-600 text-white py-3 px-6 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center">
                             Voir les Détails
                           </button>
