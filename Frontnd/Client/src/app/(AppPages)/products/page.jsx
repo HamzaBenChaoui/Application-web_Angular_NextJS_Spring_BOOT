@@ -349,21 +349,16 @@ export default function ProductsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50">
       {/* ... (Section Hero reste identique) */}
-      <div className="relative bg-gradient-to-r from-[#302652] to-[#1a1a2e] text-white py-20 overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 25% 25%, #bb00cc 1px, transparent 1px)`,
-            backgroundSize: '40px 40px'
-          }} />
-        </div>
-        
-        <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
-          <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
-            Trouvez Votre Véhicule Idéal
-          </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Découvrez notre collection premium de motos et vélos pour chaque aventure
-          </p>
+      <div className="bg-white border-b">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              Trouvez Votre Véhicule Idéal
+            </h1>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Découvrez notre collection premium de motos et vélos pour chaque aventure
+            </p>
+          </div>
         </div>
       </div>
 
@@ -494,7 +489,7 @@ export default function ProductsPage() {
                         
                         {/* --- MODIFICATION DEMANDÉE --- */}
                         {/* On utilise un template literal (les `) pour passer l'ID du produit dans l'URL. */}
-                        <Link href={`/productPage/${product.id}`} className="flex-1">
+                        <Link href="/productPage" className="flex-1">
                           <button className="w-full bg-gradient-to-r from-[#bb00cc] to-purple-600 text-white py-3 px-6 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center">
                             Voir les Détails
                           </button>

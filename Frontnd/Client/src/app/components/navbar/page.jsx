@@ -39,9 +39,11 @@ const BarreNavigation = () => {
             <div className="hidden md:flex items-center space-x-1">
               {[
                 { href: "/", label: "Accueil" },
-                { href: "/AppPages/products", label: "Produits" },
-                { href: "/AppPages/contact", label: "Contact" },
-                { href: "/blogsPages", label: "Blog" },
+                { href: "/products", label: "Produits" },
+                { href: "/contact", label: "Contact" },
+                { href: "/promotions", label: "Promotions" },
+                { href: "/blogs", label: "Blog" },
+                
               ].map((item) => (
                 <Link
                   key={item.href}
@@ -136,27 +138,27 @@ const BarreNavigation = () => {
                     <div className="py-2">
                       {[
                         {
-                          href: "/AppPages/profile",
+                          href: "/profile",
                           label: "Mon Profil",
                           icon: "👤",
                         },
                         {
-                          href: "/AppPages/favorites",
+                          href: "/favorites",
                           label: "Mes Favoris",
                           icon: "❤️",
                         },
                         {
-                          href: "/AppPages/bookings",
+                          href: "/bookings",
                           label: "Mes Réservations",
                           icon: "📅",
                         },
                         {
-                          href: "/AppPages/settings",
+                          href: "/settings",
                           label: "Paramètres",
                           icon: "⚙️",
                         },
                         {
-                          href: "/AppPages/help",
+                          href: "/help",
                           label: "Aide & Support",
                           icon: "💬",
                         },
