@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { MapPin, Calendar } from "lucide-react";
 import CarList from "../../CarList";
-
+import { Wifi, WifiOff } from "lucide-react";
 export default function CarRentalHero() {
   const [location, setLocation] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -96,6 +96,7 @@ export default function CarRentalHero() {
 <p>&nbsp;</p>
 
     </div>
+ 
     </>
   );
 }

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 // import Footer from '../../components/footer/Footer'; // Décommentez si vous l'utilisez
-
+import { EyeIcon } from '@heroicons/react/24/solid';
 // --- AJOUTÉ ---
 // 1. Importer le Modal et l'icône de paiement
 import CheckoutModal from '@/components/CheckoutModal'; // ATTENTION: J'ai corrigé ce chemin
@@ -491,10 +491,10 @@ export default function ProductsPage() {
                         {/* On utilise un template literal (les `) pour passer l'ID du produit dans l'URL. */}
                         <Link href="/productPage" className="flex-1">
                           <button className="w-full bg-gradient-to-r from-[#bb00cc] to-purple-600 text-white py-3 px-6 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center">
-                            Voir les Détails
-                          </button>
+                                        {/* Le texte est remplacé par l'icône */}
+                                        <EyeIcon className="h-6 w-6 mx-auto" /> 
+                             </button>
                         </Link>
-                        
                         {/* --- AJOUTÉ --- */}
                         {/* Nouveau Bouton Payer */}
                         <button 
