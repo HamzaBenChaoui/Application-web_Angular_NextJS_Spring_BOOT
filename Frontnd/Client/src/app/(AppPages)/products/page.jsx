@@ -1,7 +1,8 @@
 "use client";
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 // import Footer from '../../components/footer/Footer'; // Décommentez si vous l'utilisez
 import { EyeIcon } from '@heroicons/react/24/solid';
 // --- AJOUTÉ ---
@@ -46,7 +47,7 @@ const mockProducts = [
     category: 'bicycle',
     type: 'road',
     price: 5499,
-    image: '/moto.jpg',
+    image: 'https://img.freepik.com/photos-gratuite/velo-blanc-debout-dans-parc_1153-7319.jpg',
     featured: true,
     specs: {
       weight: '8.5kg',
@@ -60,7 +61,7 @@ const mockProducts = [
     category: 'bicycle',
     type: 'mountain',
     price: 3299,
-    image: '/moto.jpg',
+    image: 'https://images.pexels.com/photos/100582/pexels-photo-100582.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
     featured: false,
     specs: {
       weight: '13.2kg',
@@ -88,7 +89,7 @@ const mockProducts = [
     category: 'bicycle',
     type: 'endurance',
     price: 2899,
-    image: '/moto.jpg',
+    image: 'https://images.unsplash.com/photo-1618762044398-ec1e7e048bbd?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8diVDMyVBOWxvfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=600',
     featured: false,
     specs: {
       weight: '8.9kg',
@@ -116,7 +117,7 @@ const mockProducts = [
     category: 'bicycle',
     type: 'mountain',
     price: 899,
-    image: '/moto.jpg',
+    image: 'https://images.unsplash.com/photo-1618762044398-ec1e7e048bbd?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8diVDMyVBOWxvfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=600',
     featured: false,
     specs: {
       weight: '14.1kg',
@@ -201,7 +202,8 @@ const PriceRangeSlider = ({ minPrice, maxPrice, value, onChange }) => {
   );
 };
 
-export default function ProductsPage() {
+function ProductsPageComponent() {
+  const searchParams = useSearchParams();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [filters, setFilters] = useState({
@@ -230,11 +232,14 @@ export default function ProductsPage() {
     const maxPrice = Math.max(...mockProducts.map(product => product.price));
     const defaultMaxPrice = Math.ceil(maxPrice / 1000) * 1000;
     
+    const categoryFromUrl = searchParams.get('category');
+
     setFilters(prev => ({
       ...prev,
-      priceRange: defaultMaxPrice
+      priceRange: defaultMaxPrice,
+      category: categoryFromUrl || 'all'
     }));
-  }, []);
+  }, [searchParams]);
 
   // ... (useEffect pour filtrer les produits reste identique)
   useEffect(() => {
@@ -649,5 +654,13 @@ export default function ProductsPage() {
       />
 
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<div>Chargement des filtres...</div>}>
+      <ProductsPageComponent />
+    </Suspense>
   );
 }

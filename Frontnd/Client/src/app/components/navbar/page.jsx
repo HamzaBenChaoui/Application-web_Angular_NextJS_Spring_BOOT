@@ -39,7 +39,6 @@ const BarreNavigation = () => {
             <div className="hidden md:flex items-center space-x-1">
               {[
                 { href: "/", label: "Accueil" },
-                { href: "/products", label: "Produits" },
                 { href: "/contact", label: "Contact" },
                 { href: "/promotions", label: "Promotions" },
                 { href: "/blogs", label: "Blog" },
@@ -248,7 +247,6 @@ const BarreNavigation = () => {
           <div className="px-4 py-6 space-y-2">
             {[
               { href: "/", label: "Accueil", icon: "🏠" },
-              { href: "/AppPages/products", label: "Produits", icon: "🛍️" },
               {
                 href: "/AppPages/products?category=motorcycle",
                 label: "Motos",
