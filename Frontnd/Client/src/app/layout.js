@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
   // Determine which navbar and footer to use
   const getNavbar = () => {
     if (isBlogPage) return <BlogNavBar />;
-    if (isPromotionsPage) return <PromotionsNav />; // or create a PromotionsNavBar if different
+    if (isPromotionsPage) return null; // or create a PromotionsNavBar if different
     return <Navbar />;
   };
 

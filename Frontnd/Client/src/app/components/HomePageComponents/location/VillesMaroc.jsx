@@ -26,7 +26,7 @@ export default function VillesMaroc() {
       </h2>
 
       {/* Section des villes */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-y-14 gap-x-8 justify-items-center">
+      <div className="grid grid-cols-3 gap-y-14 gap-x-8 justify-items-center">
         {villes.map((ville) => (
           <div
             key={ville.nom}

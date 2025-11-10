@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export default function RentabilisezBys() {
   return (
@@ -16,10 +17,12 @@ export default function RentabilisezBys() {
           <span className="font-semibold">800€ / mois</span>.
         </p>
 
-        <button className="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold flex items-center gap-2 hover:bg-blue-100 transition">
-          Louer ma Bysclet
-          <ArrowRight className="w-5 h-5" />
-        </button>
+        <Link href="/Reche">
+          <button className="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold flex items-center gap-2 hover:bg-blue-100 transition">
+            Louer ma Bysclet
+            <ArrowRight className="w-5 h-5" />
+          </button>
+        </Link>
       </div>
 
       {/* Image à droite */}

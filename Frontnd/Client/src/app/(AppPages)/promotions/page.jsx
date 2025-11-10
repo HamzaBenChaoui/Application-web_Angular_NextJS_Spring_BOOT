@@ -1,585 +1,422 @@
-"use client";
+"use client"
 
-import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState } from "react"
+import { Heart, Search, ShoppingCart, Globe, User, ChevronDown, X, ChevronLeft, ChevronRight, Star } from "lucide-react"
 
-// Mock data for rental products with promotions
-const promotionalRentals = [
-  {
-    id: 1,
-    name: 'Ducati Panigale V4',
-    category: 'motorcycle',
-    type: 'sport',
-    originalPrice: 299,
-    promoPrice: 249,
-    discount: 17,
-    image: '/moto.jpg',
-    featured: true,
-    promotion: {
-      type: 'flash-sale',
-      validUntil: '2024-12-31',
-      title: 'Offre Flash',
-      description: 'Location à prix réduit pour une durée limitée'
+export default function ToursPage() {
+  const [favoriteModal, setFavoriteModal] = useState(false)
+  const [scheduleModal, setScheduleModal] = useState(false)
+  const [dateModal, setDateModal] = useState(false)
+  const [selectedSchedules, setSelectedSchedules] = useState([])
+  const [currentMonth, setCurrentMonth] = useState(10) // November (0-indexed)
+  const [selectedDates, setSelectedDates] = useState({ start: null, end: null })
+  const [favorites, setFavorites] = useState({})
+
+  const tours = [
+    {
+      id: 1,
+      image: "/bicycle-tour-historical-site.jpg",
+      badge: "Coup de coeur",
+      title: "Stellenbosch : Visite historique à vélo et dégustation de vins",
+      duration: "4,5 heures",
+      group: "Petit groupe",
+      rating: 4.9,
+      reviews: 207,
+      price: 758,
+      currency: "د.ج",
     },
-    specs: {
-      engine: '1103cc',
-      power: '214 HP',
-      weight: '175kg'
+    {
+      id: 2,
+      image: "/ebike-tour-vineyards-mountains.jpg",
+      badge: null,
+      title: "Franschhoek : Visite guidée des vignobles en E-Bike",
+      duration: "3,5 heures",
+      group: "Petit groupe",
+      rating: 4.7,
+      reviews: 82,
+      price: 819,
+      currency: "د.ج",
     },
-    rentalPeriod: 'per day'
-  },
-  {
-    id: 2,
-    name: 'Trek Domane SL 7',
-    category: 'bicycle',
-    type: 'road',
-    originalPrice: 65,
-    promoPrice: 55,
-    discount: 15,
-    image: '/moto.jpg',
-    featured: true,
-    promotion: {
-      type: 'seasonal',
-      validUntil: '2024-07-31',
-      title: 'Promotion Saisonnière',
-      description: 'Profitez de la belle saison avec nos tarifs spéciaux'
+    {
+      id: 3,
+      image: "/bicycle-tour-historical-site.jpg",
+      badge: null,
+      title: "Le Cap : visite guidée à vélo",
+      duration: "5,5 heures",
+      group: "Coupe-file",
+      rating: 4.7,
+      reviews: 0,
+      price: 502,
+      currency: "د.ج",
     },
-    specs: {
-      weight: '8.5kg',
-      gears: '22',
-      frame: 'Carbon'
+    {
+      id: 4,
+      image: "/ebike-tour-vineyards-mountains.jpg",
+      badge: "Très bien noté",
+      title: "Paris : Tour à vélo des trésors de la ville",
+      duration: "2,5 - 3 heures",
+      group: null,
+      rating: 4.9,
+      reviews: 827,
+      price: 502,
+      currency: "د.ج",
     },
-    rentalPeriod: 'per day'
-  },
-  {
-    id: 3,
-    name: 'Harley Davidson Street Glide',
-    category: 'motorcycle',
-    type: 'cruiser',
-    originalPrice: 259,
-    promoPrice: 219,
-    discount: 15,
-    image: '/moto.jpg',
-    featured: false,
-    promotion: {
-      type: 'weekend-special',
-      validUntil: '2024-08-31',
-      title: 'Spécial Weekend',
-      description: 'Parfait pour vos escapades du weekend'
-    },
-    specs: {
-      engine: '1868cc',
-      power: '92 HP',
-      weight: '385kg'
-    },
-    rentalPeriod: 'per day'
-  },
-  {
-    id: 4,
-    name: 'Specialized Stumpjumper',
-    category: 'bicycle',
-    type: 'mountain',
-    originalPrice: 39,
-    promoPrice: 33,
-    discount: 15,
-    image: '/moto.jpg',
-    featured: false,
-    promotion: {
-      type: 'weekend-special',
-      validUntil: '2024-09-30',
-      title: 'Spécial Weekend',
-      description: 'Idéal pour vos aventures en montagne'
-    },
-    specs: {
-      weight: '13.2kg',
-      suspension: '150mm',
-      frame: 'Aluminum'
-    },
-    rentalPeriod: 'per day'
-  },
-  {
-    id: 5,
-    name: 'Yamaha MT-07',
-    category: 'motorcycle',
-    type: 'naked',
-    originalPrice: 86,
-    promoPrice: 77,
-    discount: 10,
-    image: '/moto.jpg',
-    featured: false,
-    promotion: {
-      type: 'new-model',
-      validUntil: '2024-10-31',
-      title: 'Nouveau Modèle',
-      description: 'Découvrez notre dernière acquisition à prix promotionnel'
-    },
-    specs: {
-      engine: '689cc',
-      power: '74 HP',
-      weight: '184kg'
-    },
-    rentalPeriod: 'per day'
-  },
-  {
-    id: 6,
-    name: 'Giant Defy Advanced 2',
-    category: 'bicycle',
-    type: 'endurance',
-    originalPrice: 33,
-    promoPrice: 29,
-    discount: 12,
-    image: '/moto.jpg',
-    featured: false,
-    promotion: {
-      type: 'demo-rental',
-      validUntil: '2024-08-15',
-      title: 'Véhicule de Démo',
-      description: 'Modèle de démonstration en excellent état'
-    },
-    specs: {
-      weight: '8.9kg',
-      gears: '22',
-      frame: 'Carbon'
-    },
-    rentalPeriod: 'per day'
-  }
-];
+  ]
 
-const categories = ['Tous', 'motorcycle', 'bicycle'];
-const motorcycleTypes = ['Tous', 'sport', 'cruiser', 'naked', 'adventure'];
-const bicycleTypes = ['Tous', 'road', 'mountain', 'endurance', 'gravel'];
-const promotionTypes = ['Tous', 'flash-sale', 'seasonal', 'weekend-special', 'new-model', 'demo-rental'];
-
-export default function PromotionsPage() {
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [filters, setFilters] = useState({
-    category: 'Tous',
-    type: 'Tous',
-    promotionType: 'Tous',
-    discountRange: 'Tous',
-    sortBy: 'discount-high'
-  });
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-    setProducts(promotionalRentals);
-    setFilteredProducts(promotionalRentals);
-  }, []);
-
-  useEffect(() => {
-    if (!isMounted) return;
-    
-    let filtered = [...products];
-
-    // Search filter
-    if (searchTerm) {
-      filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.type.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    // Category filter
-    if (filters.category !== 'Tous') {
-      filtered = filtered.filter(product => product.category === filters.category);
-    }
-
-    // Type filter
-    if (filters.type !== 'Tous') {
-      filtered = filtered.filter(product => product.type === filters.type);
-    }
-
-    // Promotion type filter
-    if (filters.promotionType !== 'Tous') {
-      filtered = filtered.filter(product => product.promotion.type === filters.promotionType);
-    }
-
-    // Discount range filter
-    if (filters.discountRange !== 'Tous') {
-      const ranges = {
-        '10+': product => product.discount >= 10 && product.discount < 15,
-        '15+': product => product.discount >= 15 && product.discount < 20,
-        '20+': product => product.discount >= 20
-      };
-      if (ranges[filters.discountRange]) {
-        filtered = filtered.filter(ranges[filters.discountRange]);
-      }
-    }
-
-    // Sort
-    switch (filters.sortBy) {
-      case 'discount-high':
-        filtered.sort((a, b) => b.discount - a.discount);
-        break;
-      case 'discount-low':
-        filtered.sort((a, b) => a.discount - b.discount);
-        break;
-      case 'price-low':
-        filtered.sort((a, b) => a.promoPrice - b.promoPrice);
-        break;
-      case 'price-high':
-        filtered.sort((a, b) => b.promoPrice - a.promoPrice);
-        break;
-      case 'name':
-        filtered.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      default:
-        filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
-    }
-
-    setFilteredProducts(filtered);
-  }, [filters, searchTerm, products, isMounted]);
-
-  const handleFilterChange = (filterType, value) => {
-    setFilters(prev => ({
+  const toggleFavorite = (id) => {
+    setFavorites((prev) => ({
       ...prev,
-      [filterType]: value
-    }));
-  };
-
-  const getTypeOptions = () => {
-    if (filters.category === 'motorcycle') return motorcycleTypes;
-    if (filters.category === 'bicycle') return bicycleTypes;
-    return ['Tous'];
-  };
-
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0
-    }).format(price);
-  };
-
-  const getPromotionLabel = (type) => {
-    const labels = {
-      'flash-sale': 'Offre Flash',
-      'seasonal': 'Saisonnier',
-      'weekend-special': 'Spécial Weekend',
-      'new-model': 'Nouveau Modèle',
-      'demo-rental': 'Véhicule de Démo'
-    };
-    return labels[type] || type;
-  };
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    });
-  };
-
-  if (!isMounted) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="flex justify-center items-center h-64">
-            <div className="text-lg text-gray-600">Chargement...</div>
-          </div>
-        </div>
-      </div>
-    );
+      [id]: !prev[id],
+    }))
   }
+
+  const toggleSchedule = (schedule) => {
+    setSelectedSchedules((prev) => (prev.includes(schedule) ? prev.filter((s) => s !== schedule) : [...prev, schedule]))
+  }
+
+  const getDaysInMonth = (month, year = 2025) => {
+    return new Date(year, month + 1, 0).getDate()
+  }
+
+  const getFirstDayOfMonth = (month, year = 2025) => {
+    return new Date(year, month, 1).getDay()
+  }
+
+  const monthNames = [
+    "janvier",
+    "février",
+    "mars",
+    "avril",
+    "mai",
+    "juin",
+    "juillet",
+    "août",
+    "septembre",
+    "octobre",
+    "novembre",
+    "décembre",
+  ]
+  const dayNames = ["lun.", "mar.", "mer.", "jeu.", "ven.", "sam.", "dim."]
+
+  const renderCalendar = (monthIndex) => {
+    const daysInMonth = getDaysInMonth(monthIndex)
+    const firstDay = getFirstDayOfMonth(monthIndex)
+    const days = []
+    const adjustedFirstDay = (firstDay + 6) % 7 // Convert Sunday to 6
+
+    for (let i = 0; i < adjustedFirstDay; i++) {
+      days.push(null)
+    }
+
+    for (let i = 1; i <= daysInMonth; i++) {
+      days.push(i)
+    }
+
+    return days
+  }
+
+  const calendarDays1 = renderCalendar(currentMonth)
+  const calendarDays2 = renderCalendar((currentMonth + 1) % 12)
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-white">
       {/* Header */}
-      {/* Minimal Header */}
-<div className="bg-white border-b border-gray-100">
-  <div className="max-w-7xl mx-auto px-4 py-8">
-    <div className="text-center">
-      <h1 className="text-3xl font-bold text-gray-900 mb-3">
-        Locations en Promotion
-      </h1>
-      
-      <div className="w-16 h-1 bg-gradient-to-r from-[#bb00cc] to-purple-600 mx-auto mb-4 rounded-full"></div>
-      
-      <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-        Profitez de nos offres spéciales sur la location de motos et vélos
-      </p>
-    </div>
-  </div>
-</div>
-
-      {/* Horizontal Filters */}
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          {/* Search Bar */}
-          <div className="mb-6">
-            <div className="relative max-w-2xl mx-auto">
-              <input
-                type="text"
-                placeholder="Rechercher un véhicule en promotion..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#bb00cc] focus:border-[#bb00cc] transition-all duration-200"
-              />
-              <svg className="w-5 h-5 text-gray-400 absolute right-4 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-              </svg>
-            </div>
-          </div>
-
-          {/* Filter Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            {/* Category Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Catégorie</label>
-              <select
-                value={filters.category}
-                onChange={(e) => handleFilterChange('category', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#bb00cc] focus:border-[#bb00cc] text-sm"
-              >
-                {categories.map(category => (
-                  <option key={category} value={category}>
-                    {category === 'Tous' ? 'Toutes catégories' : 
-                     category === 'motorcycle' ? 'Motos' : 'Vélos'}
-                  </option>
-                ))}
-              </select>
+      <header className="border-b border-gray-200 bg-white sticky top-0 z-40">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between gap-6">
+            {/* Logo */}
+            <div className="flex-shrink-0">
+              <h1 className="text-2xl font-bold text-orange-600">
+                GET
+                <br />
+                YOUR
+                <br />
+                GUIDE
+              </h1>
             </div>
 
-            {/* Type Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
-              <select
-                value={filters.type}
-                onChange={(e) => handleFilterChange('type', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#bb00cc] focus:border-[#bb00cc] text-sm"
-              >
-                {getTypeOptions().map(type => (
-                  <option key={type} value={type}>
-                    {type === 'Tous' ? 'Tous types' : type}
-                  </option>
-                ))}
-              </select>
+            {/* Search Bar */}
+            <div className="flex-grow max-w-md">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Tour en vélo"
+                  className="w-full px-4 py-3 pr-12 border-2 border-gray-300 rounded-full focus:outline-none focus:border-blue-500"
+                />
+                <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              </div>
             </div>
 
-            {/* Promotion Type Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Type de promotion</label>
-              <select
-                value={filters.promotionType}
-                onChange={(e) => handleFilterChange('promotionType', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#bb00cc] focus:border-[#bb00cc] text-sm"
-              >
-                {promotionTypes.map(type => (
-                  <option key={type} value={type}>
-                    {type === 'Tous' ? 'Toutes promotions' : getPromotionLabel(type)}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {/* Search Button */}
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-medium whitespace-nowrap">
+              Rechercher
+            </button>
 
-            {/* Discount Range Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Réduction</label>
-              <select
-                value={filters.discountRange}
-                onChange={(e) => handleFilterChange('discountRange', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#bb00cc] focus:border-[#bb00cc] text-sm"
-              >
-                <option value="Tous">Toutes réductions</option>
-                <option value="10+">10% et plus</option>
-                <option value="15+">15% et plus</option>
-                <option value="20+">20% et plus</option>
-              </select>
-            </div>
-
-            {/* Sort By */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Trier par</label>
-              <select
-                value={filters.sortBy}
-                onChange={(e) => handleFilterChange('sortBy', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#bb00cc] focus:border-[#bb00cc] text-sm"
-              >
-                <option value="discount-high">Réduction élevée</option>
-                <option value="discount-low">Réduction faible</option>
-                <option value="price-low">Prix croissant</option>
-                <option value="price-high">Prix décroissant</option>
-                <option value="name">Nom A-Z</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Results Count & Reset */}
-          <div className="flex justify-between items-center mt-6 pt-6 border-t border-gray-200">
-            <p className="text-sm text-gray-600">
-              <span className="font-semibold text-gray-900">{filteredProducts.length}</span> véhicule(s) en promotion
-            </p>
-            {(filters.category !== 'Tous' || filters.type !== 'Tous' || filters.promotionType !== 'Tous' || filters.discountRange !== 'Tous' || searchTerm) && (
-              <button
-                onClick={() => {
-                  setFilters({
-                    category: 'Tous',
-                    type: 'Tous',
-                    promotionType: 'Tous',
-                    discountRange: 'Tous',
-                    sortBy: 'discount-high'
-                  });
-                  setSearchTerm('');
-                }}
-                className="text-sm text-[#bb00cc] hover:text-purple-700 font-medium"
-              >
-                Réinitialiser les filtres
+            {/* Right Navigation */}
+            <div className="flex items-center gap-6">
+              <span className="text-gray-700 text-sm hidden lg:inline">Devenez prestataire</span>
+              <button className="relative p-2 hover:bg-gray-100 rounded-full transition">
+                <Heart className="w-6 h-6 text-gray-700" />
               </button>
-            )}
+              <button className="relative p-2 hover:bg-gray-100 rounded-full transition">
+                <ShoppingCart className="w-6 h-6 text-gray-700" />
+              </button>
+              <button className="flex items-center gap-1 hover:bg-gray-100 px-2 py-2 rounded-full transition">
+                <Globe className="w-5 h-5 text-gray-700" />
+                <span className="text-sm text-gray-700">FR/MAD</span>
+              </button>
+              <button className="p-2 hover:bg-gray-100 rounded-full transition">
+                <User className="w-6 h-6 text-gray-700" />
+              </button>
+            </div>
           </div>
+        </div>
+
+   
+      </header>
+
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-8">
+        {/* Filters Section */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+          <div className="flex items-center gap-3">
+            <button
+              className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition font-medium text-gray-700"
+              onClick={() => setDateModal(true)}
+            >
+              📅 Dates
+            </button>
+            <button
+              className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition font-medium text-gray-700"
+              onClick={() => setScheduleModal(true)}
+            >
+              Horaire <ChevronDown className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="text-sm text-gray-600">
+            <span className="font-medium">+500 résultats :</span> Tour en vélo
+          </div>
+
+          <button className="flex items-center gap-2 text-gray-700 hover:text-gray-900 font-medium">
+            Trier par : <span className="underline">Conseillé</span> <ChevronDown className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Filters Button */}
+        <div className="mb-6 flex justify-end">
+          <button className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 font-medium">
+            ⚙️ Filtres
+          </button>
+        </div>
+
+        {/* Tours Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {tours.map((tour) => (
+            <div
+              key={tour.id}
+              className="bg-white rounded-xl overflow-hidden border border-gray-200 hover:shadow-md transition-shadow"
+            >
+              {/* Image Container */}
+              <div className="relative h-40 bg-gray-200 overflow-hidden">
+                <img
+                  src={tour.image || "/placeholder.svg"}
+                  alt={tour.title}
+                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                />
+
+                {/* Badge */}
+                {tour.badge && (
+                  <div className="absolute top-3 left-3 bg-blue-700 text-white px-3 py-1 rounded text-xs font-bold">
+                    {tour.badge}
+                  </div>
+                )}
+
+                {/* Favorite Button */}
+                <button
+                  onClick={() => toggleFavorite(tour.id)}
+                  className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition shadow"
+                >
+                  <Heart className={`w-5 h-5 ${favorites[tour.id] ? "fill-red-500 text-red-500" : "text-gray-600"}`} />
+                </button>
+              </div>
+
+              {/* Content */}
+              <div className="p-4 bg-blue-50">
+                <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 text-sm">{tour.title}</h3>
+
+                {/* Duration and Group */}
+                <p className="text-xs text-gray-600 mb-3">
+                  {tour.duration} • {tour.group || "Tour guidé"}
+                </p>
+
+                {/* Rating */}
+                <div className="flex items-center gap-1 mb-3">
+                  <div className="flex">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`w-3.5 h-3.5 ${i < Math.floor(tour.rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-xs text-gray-700 font-medium">{tour.rating}</span>
+                  {tour.reviews > 0 && <span className="text-xs text-gray-500">({tour.reviews})</span>}
+                </div>
+
+                {/* Price */}
+                <div>
+                  <p className="text-xs text-gray-600">À partir de</p>
+                  <p className="text-lg font-bold text-gray-900">
+                    {tour.price} <span className="text-sm">{tour.currency}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Rental Products Grid */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {filteredProducts.length === 0 ? (
-          <div className="text-center py-16">
-            <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Aucun véhicule trouvé</h3>
-            <p className="text-gray-600 mb-6">Aucun véhicule ne correspond à vos critères de recherche.</p>
-            <button
-              onClick={() => {
-                setFilters({
-                  category: 'Tous',
-                  type: 'Tous',
-                  promotionType: 'Tous',
-                  discountRange: 'Tous',
-                  sortBy: 'discount-high'
-                });
-                setSearchTerm('');
-              }}
-              className="bg-gradient-to-r from-[#bb00cc] to-purple-600 text-white px-6 py-2 rounded-md hover:shadow-lg transition-all duration-300 font-medium"
-            >
-              Voir toutes les promotions
-            </button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProducts.map((product) => (
-              <div
-                key={product.id}
-                className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200"
-              >
-                {/* Product Image */}
-                <div className="relative h-48 bg-gray-100">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
+      {/* Schedule Modal */}
+      {scheduleModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-lg max-w-md w-full p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Horaire</h2>
+              <button onClick={() => setScheduleModal(false)} className="p-1 hover:bg-gray-100 rounded-lg transition">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="space-y-4 mb-6">
+              {[
+                { id: "morning", label: "En matinée, de 8 h à midi" },
+                { id: "afternoon", label: "L'après-midi, de midi à 17 h" },
+                { id: "evening", label: "En soirée, de 17 h à minuit" },
+              ].map((schedule) => (
+                <label key={schedule.id} className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={selectedSchedules.includes(schedule.id)}
+                    onChange={() => toggleSchedule(schedule.id)}
+                    className="w-5 h-5 rounded border-2 border-gray-300"
                   />
-                  
-                  {/* Discount Badge */}
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-gradient-to-r from-[#bb00cc] to-purple-600 text-white px-3 py-1 rounded-full text-sm font-bold">
-                      -{product.discount}%
-                    </span>
-                  </div>
+                  <span className="text-gray-700">{schedule.label}</span>
+                </label>
+              ))}
+            </div>
 
-                  {/* Promotion Type */}
-                  <div className="absolute top-4 right-4">
-                    <span className="bg-white/90 text-gray-800 px-2 py-1 rounded text-xs font-medium border">
-                      {product.promotion.title}
-                    </span>
-                  </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setScheduleModal(false)}
+                className="flex-1 text-center py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition font-medium"
+              >
+                Réinitialiser
+              </button>
+              <button
+                onClick={() => setScheduleModal(false)}
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-full font-semibold transition"
+              >
+                Voir les résultats
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
-                  {/* Category Badge */}
-                  <div className="absolute bottom-4 left-4">
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      product.category === 'motorcycle' 
-                        ? 'bg-blue-100 text-blue-800' 
-                        : 'bg-green-100 text-green-800'
-                    }`}>
-                      {product.category === 'motorcycle' ? 'Moto' : 'Vélo'}
-                    </span>
-                  </div>
-                </div>
-                
-                {/* Product Content */}
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-3">
-                    <h3 className="text-lg font-semibold text-gray-900 pr-2">
-                      {product.name}
-                    </h3>
-                    <span className="text-sm text-gray-500 capitalize bg-gray-100 px-2 py-1 rounded">
-                      {product.type}
-                    </span>
-                  </div>
+      {/* Date Picker Modal */}
+      {dateModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-lg max-w-2xl w-full p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex gap-4">
+                <button className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 font-medium transition">
+                  Aujourd'hui
+                </button>
+                <button className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 font-medium transition">
+                  Demain
+                </button>
+              </div>
+              <button onClick={() => setDateModal(false)} className="p-1 hover:bg-gray-100 rounded-lg transition">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
 
-                  {/* Rental Price Section */}
-                  <div className="mb-4">
-                    <div className="flex items-center gap-3 mb-1">
-                      <span className="text-2xl font-bold text-gray-900">
-                        {formatPrice(product.promoPrice)}
-                      </span>
-                      <span className="text-lg text-gray-500 line-through">
-                        {formatPrice(product.originalPrice)}
-                      </span>
-                      <span className="text-sm text-gray-500">/jour</span>
-                    </div>
-                    <p className="text-sm text-green-600 font-medium">
-                      Économisez {formatPrice(product.originalPrice - product.promoPrice)}/jour
-                    </p>
-                  </div>
+            {/* Calendar Navigation */}
+            <div className="flex items-center justify-between mb-6">
+              <button
+                onClick={() => setCurrentMonth((prev) => (prev - 1 + 12) % 12)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <div className="flex gap-12">
+                <h3 className="text-lg font-bold text-gray-900 text-center flex-1">{monthNames[currentMonth]} 2025</h3>
+                <h3 className="text-lg font-bold text-gray-900 text-center flex-1">
+                  {monthNames[(currentMonth + 1) % 12]} 2025
+                </h3>
+              </div>
+              <button
+                onClick={() => setCurrentMonth((prev) => (prev + 1) % 12)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
 
-                  {/* Specifications */}
-                  <div className="grid grid-cols-3 gap-2 mb-4 text-sm">
-                    {Object.entries(product.specs).map(([key, value]) => (
-                      <div key={key} className="text-center p-2 bg-gray-50 rounded border">
-                        <div className="font-semibold text-gray-900">{value}</div>
-                        <div className="text-xs text-gray-600 capitalize mt-1">
-                          {key === 'engine' ? 'moteur' : 
-                           key === 'power' ? 'puissance' : 
-                           key === 'weight' ? 'poids' : 
-                           key === 'gears' ? 'vitesses' : 
-                           key === 'frame' ? 'cadre' : 
-                           key === 'suspension' ? 'suspension' : key}
-                        </div>
+            {/* Calendars */}
+            <div className="grid grid-cols-2 gap-8 mb-6">
+              {[calendarDays1, calendarDays2].map((days, idx) => (
+                <div key={idx}>
+                  {/* Day headers */}
+                  <div className="grid grid-cols-7 gap-2 mb-4">
+                    {dayNames.map((day) => (
+                      <div key={day} className="text-center text-sm font-semibold text-gray-600">
+                        {day}
                       </div>
                     ))}
                   </div>
 
-                  {/* Promotion Information */}
-                  <div className="border-l-4 border-[#bb00cc] bg-purple-50 rounded-r-md p-3 mb-4">
-                    <div className="space-y-2 text-sm">
-                      <div className="font-semibold text-purple-900">
-                        {product.promotion.title}
-                      </div>
-                      <p className="text-purple-700">
-                        {product.promotion.description}
-                      </p>
-                      <div className="flex items-center text-purple-600 pt-2 border-t border-purple-200">
-                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                        <span>Valable jusqu'au {formatDate(product.promotion.validUntil)}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex gap-3">
-                    <Link href="/products" className="flex-1">
-                      <button className="w-full bg-gradient-to-r from-[#bb00cc] to-purple-600 text-white py-3 px-4 rounded-md hover:shadow-lg transition-all duration-300 hover:scale-105 font-medium text-sm">
-                        Louer maintenant
+                  {/* Days */}
+                  <div className="grid grid-cols-7 gap-2">
+                    {days.map((day, i) => (
+                      <button
+                        key={i}
+                        onClick={() => day && setSelectedDates({ ...selectedDates, start: day })}
+                        className={`aspect-square rounded-lg text-sm font-medium transition ${
+                          day === null
+                            ? ""
+                            : selectedDates.start === day
+                              ? "bg-blue-500 text-white"
+                              : "hover:bg-gray-100 text-gray-700"
+                        }`}
+                      >
+                        {day}
                       </button>
-                    </Link>
-                    <button className="p-3 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
-                      <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                      </svg>
-                    </button>
+                    ))}
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            {/* Bottom Buttons */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => setSelectedDates({ start: null, end: null })}
+                className="flex-1 text-center py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition font-medium underline"
+              >
+                Effacer
+              </button>
+              <button
+                onClick={() => setDateModal(false)}
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-full font-semibold transition"
+              >
+                Voir les résultats
+              </button>
+            </div>
           </div>
-        )}
-      </div>
-    </div>
-  );
+        </div>
+      )}
+    </main>
+  )
 }
