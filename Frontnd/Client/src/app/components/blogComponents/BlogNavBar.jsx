@@ -6,9 +6,9 @@ const BlogNavbar = () => {
   const [menuMobileOuvert, setMenuMobileOuvert] = useState(false);
 
   const navLinks = [
-    { href: "/blogsPages/inspiration", label: "Inspiration", icon: "💡" },
-    { href: "/blogsPages/proprietaires", label: "Conseils et Astuces", icon: "👤" },
-    { href: "/blogsPages/actualites", label: "Technologie et  Innovation", icon: "📢" },
+    { href: "/blogs/inspiration", label: "Inspiration", icon: "💡" },
+    { href: "/blogs/proprietaires", label: "Conseils et Astuces", icon: "👤" },
+    { href: "/blogs/actualites", label: "Technologie et  Innovation", icon: "📢" },
   ];
 
   return (

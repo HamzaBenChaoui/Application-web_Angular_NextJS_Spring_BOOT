@@ -4,6 +4,11 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react'; // 'useRef' n'était pas utilisé, je l'ai enlevé
 // import Footer from '../../components/footer/Footer'; // Décommentez si vous l'utilisez
 
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+// import Footer from '../../components/footer/Footer'; // Décommentez si vous l'utilisez
+import { EyeIcon } from '@heroicons/react/24/solid';
+
 // --- AJOUTÉ ---
 // 1. Importer le Modal et l'icône de paiement
 import CheckoutModal from '@/components/CheckoutModal'; // ATTENTION: J'ai corrigé ce chemin
@@ -46,7 +51,7 @@ const mockProducts = [
     category: 'bicycle',
     type: 'road',
     price: 5499,
-    image: '/moto.jpg',
+    image: 'https://img.freepik.com/photos-gratuite/velo-blanc-debout-dans-parc_1153-7319.jpg',
     featured: true,
     specs: {
       weight: '8.5kg',
@@ -60,7 +65,7 @@ const mockProducts = [
     category: 'bicycle',
     type: 'mountain',
     price: 3299,
-    image: '/moto.jpg',
+    image: 'https://images.pexels.com/photos/100582/pexels-photo-100582.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
     featured: false,
     specs: {
       weight: '13.2kg',
@@ -88,7 +93,7 @@ const mockProducts = [
     category: 'bicycle',
     type: 'endurance',
     price: 2899,
-    image: '/moto.jpg',
+    image: 'https://images.unsplash.com/photo-1618762044398-ec1e7e048bbd?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8diVDMyVBOWxvfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=600',
     featured: false,
     specs: {
       weight: '8.9kg',
@@ -116,7 +121,7 @@ const mockProducts = [
     category: 'bicycle',
     type: 'mountain',
     price: 899,
-    image: '/moto.jpg',
+    image: 'https://images.unsplash.com/photo-1618762044398-ec1e7e048bbd?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8diVDMyVBOWxvfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=600',
     featured: false,
     specs: {
       weight: '14.1kg',
@@ -183,7 +188,7 @@ const PriceRangeSlider = ({ minPrice, maxPrice, value, onChange }) => {
           className="absolute top-1/2 left-0 w-full h-2 -translate-y-1/2 opacity-0 cursor-pointer z-20"
         />
         
-        {/* Curseur personnalisé - Positionné correctement */}
+        {/* Curseur personnalisé - Positionné correctly */}
         <div 
           className="absolute top-1/2 w-4 h-4 bg-white border-2 border-[#bb00cc] rounded-full shadow-lg transform -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform duration-200 z-10"
           style={{ 
@@ -201,7 +206,8 @@ const PriceRangeSlider = ({ minPrice, maxPrice, value, onChange }) => {
   );
 };
 
-export default function ProductsPage() {
+function ProductsPageComponent() {
+  const searchParams = useSearchParams();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [filters, setFilters] = useState({
@@ -230,11 +236,14 @@ export default function ProductsPage() {
     const maxPrice = Math.max(...mockProducts.map(product => product.price));
     const defaultMaxPrice = Math.ceil(maxPrice / 1000) * 1000;
     
+    const categoryFromUrl = searchParams.get('category');
+
     setFilters(prev => ({
       ...prev,
-      priceRange: defaultMaxPrice
+      priceRange: defaultMaxPrice,
+      category: categoryFromUrl || 'all'
     }));
-  }, []);
+  }, [searchParams]);
 
   // ... (useEffect pour filtrer les produits reste identique)
   useEffect(() => {
@@ -263,7 +272,7 @@ export default function ProductsPage() {
         filtered.sort((a, b) => a.price - b.price);
         break;
       case 'price-high':
-        filtered.sort((a, b) => b.price - a.price);
+        filtered.sort((a, b) => b.price - b.price);
         break;
       case 'name':
         filtered.sort((a, b) => a.name.localeCompare(b.name));
@@ -349,6 +358,7 @@ export default function ProductsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50">
       {/* ... (Section Hero reste identique) */}
+<<<<<<< HEAD:Frontnd/Client/src/app/AppPages/products/page.jsx
       <div className="relative bg-gradient-to-r from-[#302652] to-[#1a1a2e] text-white py-20 overflow-hidden">
         <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0" style={{
@@ -364,6 +374,18 @@ export default function ProductsPage() {
           <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
             Découvrez notre collection premium de motos et vélos pour chaque aventure
           </p>
+=======
+      <div className="bg-white border-b">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              Trouvez Votre Véhicule Idéal
+            </h1>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Découvrez notre collection premium de motos et vélos pour chaque aventure
+            </p>
+          </div>
+>>>>>>> hamza_a:Frontnd/Client/src/app/(AppPages)/products/page.jsx
         </div>
       </div>
 
@@ -491,6 +513,7 @@ export default function ProductsPage() {
                       {/* --- MODIFIÉ --- */}
                       {/* 4. Modification de la barre de boutons */}
                       <div className="flex space-x-3 mt-auto pt-4">
+<<<<<<< HEAD:Frontnd/Client/src/app/AppPages/products/page.jsx
                         {/* Bouton Voir les Détails */}
                         <Link href="/productPage" className="flex-1">
                           <button className="w-full bg-gradient-to-r from-[#bb00cc] to-purple-600 text-white py-3 px-6 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center">
@@ -498,6 +521,17 @@ export default function ProductsPage() {
                           </button>
                         </Link>
                         
+=======
+                        
+                        {/* --- MODIFICATION DEMANDÉE --- */}
+                        {/* On utilise un template literal (les `) pour passer l'ID du produit dans l'URL. */}
+                        <Link href="/productPage" className="flex-1">
+                          <button className="w-full bg-gradient-to-r from-[#bb00cc] to-purple-600 text-white py-3 px-6 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center">
+                                        {/* Le texte est remplacé par l'icône */}
+                                        <EyeIcon className="h-6 w-6 mx-auto" /> 
+                             </button>
+                        </Link>
+>>>>>>> hamza_a:Frontnd/Client/src/app/(AppPages)/products/page.jsx
                         {/* --- AJOUTÉ --- */}
                         {/* Nouveau Bouton Payer */}
                         <button 
@@ -652,5 +686,13 @@ export default function ProductsPage() {
       />
 
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<div>Chargement des filtres...</div>}>
+      <ProductsPageComponent />
+    </Suspense>
   );
 }

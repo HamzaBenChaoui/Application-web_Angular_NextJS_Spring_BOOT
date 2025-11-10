@@ -2,82 +2,61 @@ export const properties = [
   {
     id: 1,
     imageUrl:
-      "https://blog.dupontregistry.com/wp-content/uploads/2020/08/Parkland_1st-Photo-scaled.jpg",
-    price: "$999,999",
-    address: "632 Fake Address",
+      "https://images.pexels.com/photos/1715193/pexels-photo-1715193.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    price: "€12,500",
+    address: "Casablanca, Anfa",
     description:
-      "Beautiful house! Offers you 4 bedrooms, 3 full bathrooms with separate showers. Lots of windows and natural light. The finished basement includes a bedroom, a large family room and a full bathroom. Great location! Close to daycares, schools and accessible by public transport. 5 minutes by car from the downtown area. Quick access to highway and subway. On the second floor: The master bedroom is spacious. It has a balcony, a large walk-in closet, and its own en-suite bathroom. The other three bedrooms are of good size and each has its own walk-in closet. The basement is fully finished and offers a family room, as well as a game room. The basement bedroom is convenient with a full bathroom.",
-    numBedroom: 4,
-    numWashrooms: 3,
-    livingSpace: "3,000 sq.ft.",
+      "Superbe moto sportive, parfaite pour les amateurs de vitesse et les sorties sur circuit. Entretien à jour, jamais accidentée. Pneus neufs. Prête à rouler pour la saison. Couleur noir mat, look agressif garanti.",
+    numBedroom: "1000cc", // Cylindrée
+    numWashrooms: "2022",   // Année
+    livingSpace: "8,500 km", // Kilométrage
   },
   {
     id: 2,
     imageUrl:
-      "https://blog.dupontregistry.com/wp-content/uploads/2021/02/IMP1-scaled.jpg",
-    price: "$1,200,000",
-    address: "1204 Fake Address",
+      "https://images.pexels.com/photos/100582/pexels-photo-100582.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    price: "€850",
+    address: "Rabat, Agdal",
     description:
-      "Beautiful house! Offers you 4 bedrooms, 3 full bathrooms with separate showers. Lots of windows and natural light. The finished basement includes a bedroom, a large family room and a full bathroom. Great location! Close to daycares, schools and accessible by public transport. 5 minutes by car from the downtown area. Quick access to highway and subway. On the second floor: The master bedroom is spacious. It has a balcony, a large walk-in closet, and its own en-suite bathroom. The other three bedrooms are of good size and each has its own walk-in closet. The basement is fully finished and offers a family room, as well as a game room. The basement bedroom is convenient with a full bathroom.",
-    numBedroom: 4,
-    numWashrooms: 3,
-    livingSpace: "2,410 sq.ft.",
+      "VTT (Vélo Tout Terrain) en excellent état. Idéal pour les sentiers et la montagne. Cadre en aluminium léger, 21 vitesses Shimano. Freins à disque hydrauliques pour une sécurité maximale. Peu servi.",
+    numBedroom: "VTT",      // Type
+    numWashrooms: "2023",   // Année
+    livingSpace: "450 km",  // Kilométrage
   },
   {
     id: 3,
     imageUrl:
-      "https://ca-times.brightspotcdn.com/dims4/default/c12c0dd/2147483647/strip/true/crop/2000x1195+0+0/resize/1486x888!/quality/90/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2Fad%2Ff4%2F1f1b2193479eafb7cbba65691184%2F10480-sunset-fullres-01.jpg",
-    price: "$2,400,000",
-    address: "7177 Fake Address",
+      "https://images.pexels.com/photos/1413412/pexels-photo-1413412.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    price: "€3,200",
+    address: "Marrakech, Guéliz",
     description:
-      "Beautiful house! Offers you 4 bedrooms, 3 full bathrooms with separate showers. Lots of windows and natural light. The finished basement includes a bedroom, a large family room and a full bathroom. Great location! Close to daycares, schools and accessible by public transport. 5 minutes by car from the downtown area. Quick access to highway and subway. On the second floor: The master bedroom is spacious. It has a balcony, a large walk-in closet, and its own en-suite bathroom. The other three bedrooms are of good size and each has its own walk-in closet. The basement is fully finished and offers a family room, as well as a game room. The basement bedroom is convenient with a full bathroom.",
-    numBedroom: 4,
-    numWashrooms: 3,
-    livingSpace: "4,450 sq.ft.",
-  },  {
+      "Scooter 125cc parfait pour la ville. Faible consommation, très maniable. Grand coffre sous la selle. Idéal pour éviter les embouteillages. Première main, carnet d'entretien disponible.",
+    numBedroom: "125cc",     // Cylindrée
+    numWashrooms: "2021",   // Année
+    livingSpace: "12,000 km", // Kilométrage
+  },
+  {
     id: 4,
     imageUrl:
-      "https://blog.dupontregistry.com/wp-content/uploads/2020/08/Parkland_1st-Photo-scaled.jpg",
-    price: "$999,999",
-    address: "632 Fake Address",
+      "https://images.pexels.com/photos/819805/pexels-photo-819805.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    price: "€9,800",
+    address: "Agadir, Centre-Ville",
     description:
-      "Beautiful house! Offers you 4 bedrooms, 3 full bathrooms with separate showers. Lots of windows and natural light. The finished basement includes a bedroom, a large family room and a full bathroom. Great location! Close to daycares, schools and accessible by public transport. 5 minutes by car from the downtown area. Quick access to highway and subway. On the second floor: The master bedroom is spacious. It has a balcony, a large walk-in closet, and its own en-suite bathroom. The other three bedrooms are of good size and each has its own walk-in closet. The basement is fully finished and offers a family room, as well as a game room. The basement bedroom is convenient with a full bathroom.",
-    numBedroom: 4,
-    numWashrooms: 3,
-    livingSpace: "3,000 sq.ft.",
-  },  {
+      "Magnifique cruiser custom. Look unique, beaucoup de chrome. Son incroyable. Parfait pour les balades du week-end. Dors toujours au garage, état irréprochable. Pneus à flanc blanc.",
+    numBedroom: "900cc",      // Cylindrée
+    numWashrooms: "2019",   // Année
+    livingSpace: "21,000 km", // Kilométrage
+  },
+  {
     id: 5,
     imageUrl:
-      "https://blog.dupontregistry.com/wp-content/uploads/2020/08/Parkland_1st-Photo-scaled.jpg",
-    price: "$999,999",
-    address: "632 Fake Address",
+      "https://images.pexels.com/photos/1149601/pexels-photo-1149601.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    price: "€1,900",
+    address: "Tanger, Malabata",
     description:
-      "Beautiful house! Offers you 4 bedrooms, 3 full bathrooms with separate showers. Lots of windows and natural light. The finished basement includes a bedroom, a large family room and a full bathroom. Great location! Close to daycares, schools and accessible by public transport. 5 minutes by car from the downtown area. Quick access to highway and subway. On the second floor: The master bedroom is spacious. It has a balcony, a large walk-in closet, and its own en-suite bathroom. The other three bedrooms are of good size and each has its own walk-in closet. The basement is fully finished and offers a family room, as well as a game room. The basement bedroom is convenient with a full bathroom.",
-    numBedroom: 4,
-    numWashrooms: 3,
-    livingSpace: "3,000 sq.ft.",
-  },  {
-    id: 6,
-    imageUrl:
-      "https://blog.dupontregistry.com/wp-content/uploads/2020/08/Parkland_1st-Photo-scaled.jpg",
-    price: "$999,999",
-    address: "632 Fake Address",
-    description:
-      "Beautiful house! Offers you 4 bedrooms, 3 full bathrooms with separate showers. Lots of windows and natural light. The finished basement includes a bedroom, a large family room and a full bathroom. Great location! Close to daycares, schools and accessible by public transport. 5 minutes by car from the downtown area. Quick access to highway and subway. On the second floor: The master bedroom is spacious. It has a balcony, a large walk-in closet, and its own en-suite bathroom. The other three bedrooms are of good size and each has its own walk-in closet. The basement is fully finished and offers a family room, as well as a game room. The basement bedroom is convenient with a full bathroom.",
-    numBedroom: 4,
-    numWashrooms: 3,
-    livingSpace: "3,000 sq.ft.",
-  },
-    {
-    id: 7,
-    imageUrl:
-      "https://blog.dupontregistry.com/wp-content/uploads/2020/08/Parkland_1st-Photo-scaled.jpg",
-    price: "$999,999",
-    address: "632 Fake Address",
-    description:
-      "Beautiful house! Offers you 4 bedrooms, 3 full bathrooms with separate showers. Lots of windows and natural light. The finished basement includes a bedroom, a large family room and a full bathroom. Great location! Close to daycares, schools and accessible by public transport. 5 minutes by car from the downtown area. Quick access to highway and subway. On the second floor: The master bedroom is spacious. It has a balcony, a large walk-in closet, and its own en-suite bathroom. The other three bedrooms are of good size and each has its own walk-in closet. The basement is fully finished and offers a family room, as well as a game room. The basement bedroom is convenient with a full bathroom.",
-    numBedroom: 4,
-    numWashrooms: 3,
-    livingSpace: "3,000 sq.ft.",
+      "Vélo à assistance électrique (VAE) comme neuf. Batterie longue durée (jusqu'à 100km d'autonomie). Moteur puissant pour les montées. Confortable et pratique pour les déplacements quotidiens.",
+    numBedroom: "Électrique", // Type
+    numWashrooms: "2023",     // Année
+    livingSpace: "1,200 km",  // Kilométrage
   },
 ];

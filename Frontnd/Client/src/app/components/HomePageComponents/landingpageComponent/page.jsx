@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 
 export default function NewWaySection() {
@@ -139,9 +140,11 @@ export default function NewWaySection() {
             </div>
 
             {/* Button */}
+           <Link href="/How_works" className="flex-1">
             <button className="md:mt-3 px-6 py-3 border-2 border-purple-600 text-purple-600 text-base md:text-lg font-semibold rounded-full hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 w-fit">
               Voir comment ça marche →
             </button>
+            </Link>
           </div>
         </section>
       </div>
