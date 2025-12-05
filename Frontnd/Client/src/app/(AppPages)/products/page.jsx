@@ -1,14 +1,10 @@
 "use client";
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react'; // 'useRef' n'était pas utilisé, je l'ai enlevé
-// import Footer from '../../components/footer/Footer'; // Décommentez si vous l'utilisez
-
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 // import Footer from '../../components/footer/Footer'; // Décommentez si vous l'utilisez
 import { EyeIcon } from '@heroicons/react/24/solid';
-
 // --- AJOUTÉ ---
 // 1. Importer le Modal et l'icône de paiement
 import CheckoutModal from '@/components/CheckoutModal'; // ATTENTION: J'ai corrigé ce chemin
@@ -358,23 +354,6 @@ function ProductsPageComponent() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50">
       {/* ... (Section Hero reste identique) */}
-<<<<<<< HEAD:Frontnd/Client/src/app/AppPages/products/page.jsx
-      <div className="relative bg-gradient-to-r from-[#302652] to-[#1a1a2e] text-white py-20 overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 25% 25%, #bb00cc 1px, transparent 1px)`,
-            backgroundSize: '40px 40px'
-          }} />
-        </div>
-        
-        <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
-          <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
-            Trouvez Votre Véhicule Idéal
-          </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Découvrez notre collection premium de motos et vélos pour chaque aventure
-          </p>
-=======
       <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="text-center">
@@ -385,7 +364,6 @@ function ProductsPageComponent() {
               Découvrez notre collection premium de motos et vélos pour chaque aventure
             </p>
           </div>
->>>>>>> hamza_a:Frontnd/Client/src/app/(AppPages)/products/page.jsx
         </div>
       </div>
 
@@ -513,15 +491,6 @@ function ProductsPageComponent() {
                       {/* --- MODIFIÉ --- */}
                       {/* 4. Modification de la barre de boutons */}
                       <div className="flex space-x-3 mt-auto pt-4">
-<<<<<<< HEAD:Frontnd/Client/src/app/AppPages/products/page.jsx
-                        {/* Bouton Voir les Détails */}
-                        <Link href="/productPage" className="flex-1">
-                          <button className="w-full bg-gradient-to-r from-[#bb00cc] to-purple-600 text-white py-3 px-6 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center">
-                            Voir les Détails
-                          </button>
-                        </Link>
-                        
-=======
                         
                         {/* --- MODIFICATION DEMANDÉE --- */}
                         {/* On utilise un template literal (les `) pour passer l'ID du produit dans l'URL. */}
@@ -531,7 +500,6 @@ function ProductsPageComponent() {
                                         <EyeIcon className="h-6 w-6 mx-auto" /> 
                              </button>
                         </Link>
->>>>>>> hamza_a:Frontnd/Client/src/app/(AppPages)/products/page.jsx
                         {/* --- AJOUTÉ --- */}
                         {/* Nouveau Bouton Payer */}
                         <button 

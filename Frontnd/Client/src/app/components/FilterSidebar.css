@@ -1,0 +1,47 @@
+.filter-sidebar {
+  @apply lg:w-64 space-y-4;
+}
+
+.glass-card {
+  @apply bg-white/80 backdrop-blur-sm border border-white/30 rounded-xl shadow-lg p-4;
+}
+
+.filter-title {
+  @apply font-semibold text-[#302652] mb-3 text-base;
+}
+
+.search-input-container {
+  @apply relative;
+}
+
+.search-input {
+  @apply w-full px-3 py-2 text-sm bg-white/70 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#bb00cc] focus:border-transparent transition-all duration-200;
+}
+
+.search-icon {
+  @apply w-4 h-4 text-gray-400 absolute right-3 top-2.5;
+}
+
+.filter-option-label {
+  @apply flex items-center group cursor-pointer transition-all duration-200 hover:translate-x-1;
+}
+
+.filter-option-input {
+  @apply w-3.5 h-3.5 text-[#bb00cc] border-gray-300 focus:ring-[#bb00cc];
+}
+
+.filter-option-text {
+  @apply ml-2 text-sm text-gray-700 capitalize font-medium group-hover:text-[#302652] transition-colors;
+}
+
+.price-range-slider-container {
+  @apply mt-3 text-center;
+}
+
+.price-range-slider-label {
+  @apply text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full;
+}
+
+.sort-by-select {
+  @apply w-full px-3 py-2 text-sm bg-white/70 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#bb00cc] focus:border-transparent transition-all duration-200;
+}
