@@ -7,17 +7,9 @@
         <div>
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white">{{ user.firstName }} {{ user.lastName }}</h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            {{ user.job }} | {{ user.location }}
+            Administrator
           </p>
         </div>
-      </div>
-      <div class="flex items-center space-x-3 mt-4 sm:mt-0">
-        <a *ngFor="let link of user.socials | keyvalue" [href]="link.value" class="w-9 h-9 flex items-center justify-center border border-gray-300 rounded-full text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
-          <i [class]="'fab fa-' + link.key"></i>
-        </a>
-        <button (click)="edit('Profile')" class="flex items-center gap-2 px-4 py-2 border rounded-lg text-sm text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-gray-700">
-          <i class="fas fa-pen"></i> Edit
-        </button>
       </div>
     </div>
   </div>
@@ -33,6 +25,14 @@
 
     <div class="grid sm:grid-cols-2 gap-6 text-sm text-gray-700 dark:text-gray-300">
       <div>
+        <p class="font-semibold">User ID</p>
+        <p>{{ user.id }}</p>
+      </div>
+      <div>
+        <p class="font-semibold">Email address</p>
+        <p>{{ user.email }}</p>
+      </div>
+      <div>
         <p class="font-semibold">First Name</p>
         <p>{{ user.firstName }}</p>
       </div>
@@ -40,58 +40,37 @@
         <p class="font-semibold">Last Name</p>
         <p>{{ user.lastName }}</p>
       </div>
-      <div>
-        <p class="font-semibold">Email address</p>
-        <p>{{ user.email }}</p>
-      </div>
-      <div>
-        <p class="font-semibold">Phone</p>
-        <p>{{ user.phone }}</p>
-      </div>
-      <div class="sm:col-span-2">
-        <p class="font-semibold">Bio</p>
-        <p>{{ user.bio }}</p>
-      </div>
     </div>
   </div>
 
-  <!-- Address Section -->
+  <!-- Security -->
   <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
     <div class="flex items-center justify-between mb-4">
-      <h3 class="text-md font-semibold text-gray-900 dark:text-white">Address</h3>
-      <button (click)="edit('Address')" class="flex items-center gap-2 px-3 py-1 border rounded-lg text-sm text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-gray-700">
-        <i class="fas fa-pen"></i> Edit
+      <h3 class="text-md font-semibold text-gray-900 dark:text-white">Security</h3>
+      <button (click)="edit('Security')" class="flex items-center gap-2 px-3 py-1 border rounded-lg text-sm text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-gray-700">
+        <i class="fas fa-pen"></i> Change Password
       </button>
     </div>
-
-    <div class="grid sm:grid-cols-2 gap-6 text-sm text-gray-700 dark:text-gray-300">
+    <div class="text-sm text-gray-700 dark:text-gray-300">
       <div>
-        <p class="font-semibold">Country</p>
-        <p>{{ user.country }}</p>
-      </div>
-      <div>
-        <p class="font-semibold">City/State</p>
-        <p>{{ user.city }}</p>
-      </div>
-      <div>
-        <p class="font-semibold">Postal Code</p>
-        <p>{{ user.postalCode }}</p>
-      </div>
-      <div>
-        <p class="font-semibold">TAX ID</p>
-        <p>{{ user.taxId }}</p>
+        <p class="font-semibold">Password</p>
+        <p>••••••••</p>
       </div>
     </div>
   </div>
-</div>
+
 
 <!-- MODAL -->
 <div *ngIf="isModalOpen" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
   <div class="bg-white rounded-xl shadow-lg w-full max-w-lg p-6 relative">
     <h2 class="text-xl font-semibold mb-4">Edit {{ editSection }}</h2>
 
-    <!-- Formulaire -->
-    <div class="space-y-4 text-sm">
+    <div *ngIf="statusMessage" class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50" role="alert">
+      {{ statusMessage }}
+    </div>
+
+    <!-- Personal Information Form -->
+    <div *ngIf="editSection === 'Personal Information'" class="space-y-4 text-sm">
       <div>
         <label class="block font-semibold mb-1">First Name</label>
         <input [(ngModel)]="editableUser.firstName" class="w-full border rounded-md p-2 focus:border-blue-400 outline-none" />
@@ -104,13 +83,36 @@
         <label class="block font-semibold mb-1">Email</label>
         <input [(ngModel)]="editableUser.email" class="w-full border rounded-md p-2 focus:border-blue-400 outline-none" />
       </div>
+    </div>
+
+    <!-- Security Form -->
+    <div *ngIf="editSection === 'Security'" class="space-y-4 text-sm">
       <div>
-        <label class="block font-semibold mb-1">Phone</label>
-        <input [(ngModel)]="editableUser.phone" class="w-full border rounded-md p-2 focus:border-blue-400 outline-none" />
+        <label class="block font-semibold mb-1">Old Password</label>
+        <div class="relative">
+          <input [type]="oldPasswordType" [(ngModel)]="oldPassword" class="w-full border rounded-md p-2 focus:border-blue-400 outline-none pr-10" />
+          <button type="button" (click)="toggleOldPasswordVisibility()" class="absolute inset-y-0 right-0 px-3 flex items-center focus:outline-none">
+            <i class="fas" [class.fa-eye]="!showOldPassword" [class.fa-eye-slash]="showOldPassword"></i>
+          </button>
+        </div>
       </div>
       <div>
-        <label class="block font-semibold mb-1">Bio</label>
-        <textarea [(ngModel)]="editableUser.bio" class="w-full border rounded-md p-2 focus:border-blue-400 outline-none"></textarea>
+        <label class="block font-semibold mb-1">New Password</label>
+        <div class="relative">
+          <input [type]="newPasswordType" [(ngModel)]="newPassword" class="w-full border rounded-md p-2 focus:border-blue-400 outline-none pr-10" />
+          <button type="button" (click)="toggleNewPasswordVisibility()" class="absolute inset-y-0 right-0 px-3 flex items-center focus:outline-none">
+            <i class="fas" [class.fa-eye]="!showNewPassword" [class.fa-eye-slash]="showNewPassword"></i>
+          </button>
+        </div>
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Confirm New Password</label>
+        <div class="relative">
+          <input [type]="confirmNewPasswordType" [(ngModel)]="confirmNewPassword" class="w-full border rounded-md p-2 focus:border-blue-400 outline-none pr-10" />
+          <button type="button" (click)="toggleConfirmNewPasswordVisibility()" class="absolute inset-y-0 right-0 px-3 flex items-center focus:outline-none">
+            <i class="fas" [class.fa-eye]="!showConfirmNewPassword" [class.fa-eye-slash]="showConfirmNewPassword"></i>
+          </button>
+        </div>
       </div>
     </div>
 

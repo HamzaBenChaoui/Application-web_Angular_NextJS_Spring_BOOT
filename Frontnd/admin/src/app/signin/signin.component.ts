@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-signin',
@@ -6,15 +8,29 @@ import { Component } from '@angular/core';
   styleUrls: ['./signin.component.css']
 })
 export class SigninComponent {
-  fname: string = '';
-  lname: string = '';
-  email: string = '';
-  password: string = '';
+  loginData = {
+    email: '',
+    password: ''
+  };
   showPassword = false;
-  isChecked = false;
-  disabled = false; // Assuming 'disabled' is a property for the checkbox
+  loginError = false;
+
+  constructor(private authService: AuthService, private router: Router) {}
 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
+  }
+
+  onSubmit() {
+    this.loginError = false;
+    this.authService.login(this.loginData).subscribe({
+      next: () => {
+        this.router.navigate(['/admin/dashboard']);
+      },
+      error: (err) => {
+        console.error('Login failed:', err);
+        this.loginError = true;
+      }
+    });
   }
 }

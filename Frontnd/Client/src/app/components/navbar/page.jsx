@@ -474,4 +474,3 @@ const BarreNavigation = () => {
 
 export default BarreNavigation;
 
->>>>>>> hedda_branche

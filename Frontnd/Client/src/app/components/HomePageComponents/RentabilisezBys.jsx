@@ -1,10 +1,7 @@
 "use client";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-<<<<<<< HEAD
 import Link from "next/link";
-=======
->>>>>>> hedda_branche
 
 export default function RentabilisezBys() {
   return (
@@ -13,7 +10,7 @@ export default function RentabilisezBys() {
       {/* Texte à gauche */}
       <div className="flex-1 space-y-6">
         <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-          Rentabilisez votre <br /> Bysclet  !
+          Rentabilisez votre <br /> Bysclet !
         </h1>
         <p className="text-lg md:text-xl">
           Avec Getaround Connect, votre Bysclet vous rapporte jusqu'à{" "}
@@ -32,7 +29,7 @@ export default function RentabilisezBys() {
       <div className="flex-1 mt-10 md:mt-0 md:ml-8">
         <div className="relative w-full h-72 md:h-96 rounded-2xl overflow-hidden shadow-md">
           <Image
-            src="/bysclet.jpg" // remplace par ton image
+            src="/bysclet.jpg"
             alt="Homme au volant"
             fill
             className="object-cover"
