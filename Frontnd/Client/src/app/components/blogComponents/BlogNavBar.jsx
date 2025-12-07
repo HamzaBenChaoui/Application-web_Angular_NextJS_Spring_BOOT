@@ -9,6 +9,7 @@ const BlogNavbar = () => {
     { href: "/blogs/inspiration", label: "Inspiration", icon: "💡" },
     { href: "/blogs/proprietaires", label: "Conseils et Astuces", icon: "👤" },
     { href: "/blogs/actualites", label: "Technologie et  Innovation", icon: "📢" },
+    { href: "/blogs/business", label: "Business", icon: "💼" }
   ];
 
   return (
@@ -144,6 +145,20 @@ const BlogNavbar = () => {
                 </svg>
               </Link>
             ))}
+            
+            {/* Recherche Mobile */}
+            <div className="pt-4 border-t border-gray-200">
+                <div className="relative">
+                    <input
+                        type="text"
+                        placeholder="Rechercher des articles..."
+                        className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#bb00cc]/20 focus:border-[#bb00cc] transition-all duration-300"
+                    />
+                    <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+            </div>
 
             {/* --- Retour au site principal --- */}
             <div className="pt-4 border-t border-gray-200">
@@ -171,6 +186,21 @@ const BlogNavbar = () => {
           </div>
         </div>
       </nav>
+      <style jsx>{`
+          @keyframes fade-in {
+              from {
+                  opacity: 0;
+                  transform: translateY(-10px);
+              }
+              to {
+                  opacity: 1;
+                  transform: translateY(0);
+              }
+          }
+          .animate-fade-in {
+              animation: fade-in 0.2s ease-out;
+          }
+      `}</style>
     </>
   );
 };

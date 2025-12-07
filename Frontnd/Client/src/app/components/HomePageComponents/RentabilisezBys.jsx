@@ -1,7 +1,10 @@
 "use client";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
+<<<<<<< HEAD
 import Link from "next/link";
+=======
+>>>>>>> hedda_branche
 
 export default function RentabilisezBys() {
   return (

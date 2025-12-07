@@ -12,8 +12,7 @@ export default function CarList() {
       reviews: 36,
       priceHour: 6,
       priceDay: 46,
-      image:
-        "https://img.freepik.com/photos-gratuite/velo-blanc-debout-dans-parc_1153-7319.jpg",
+      image: "https://moto.honda.fr/content/dam/central/motorcycles/range/25ym-coming-soon/25YM_CB1000%20HORNET_COMING_SOON_MOBILE_4.jpg/_jcr_content/renditions/m_r.jpg",
     },
     {
       id: 2,
@@ -23,8 +22,7 @@ export default function CarList() {
       reviews: 59,
       priceHour: 4,
       priceDay: 30,
-      image:
-        "https://images.pexels.com/photos/100582/pexels-photo-100582.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+      image: "https://mister-occaz.com/wp-content/uploads/2022/05/IMG-20240711-WA0006.jpg",
     },
     {
       id: 3,
@@ -34,8 +32,7 @@ export default function CarList() {
       reviews: 43,
       priceHour: 7,
       priceDay: 50,
-      image:
-        "https://images.unsplash.com/photo-1583227122027-d2d360c66d3c?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzB8fHYlQzMlQTlsb3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=600",
+      image: "https://www.easymonneret.com/media/cache/monsieurbiz_rich_editor_image/3abf74719b4840b59cb679cc1ad7e141_1_201_a-654cdc06011c7.jpg",
     },
     {
       id: 4,
@@ -45,8 +42,7 @@ export default function CarList() {
       reviews: 17,
       priceHour: 6,
       priceDay: 51,
-      image:
-        "https://images.unsplash.com/photo-1583227122027-d2d360c66d3c?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzB8fHYlQzMlQTlsb3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=600",
+      image: "https://www.adventure-bmw.com/wp-content/uploads/2022/10/img_5074.jpg",
     },
   ];
 
