@@ -2,6 +2,7 @@ package com.kaoba.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kaoba.dto.ProductDTO;
+import com.kaoba.entity.Product;
 import com.kaoba.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,5 +56,11 @@ public class ProductController {
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductDTO>> searchAvailableProducts(@RequestParam("type") String type) {
+        Product.ProductTypeEnum productType = Product.ProductTypeEnum.valueOf(type.toUpperCase());
+        return ResponseEntity.ok(productService.getAvailableProductsByType(productType));
     }
 }

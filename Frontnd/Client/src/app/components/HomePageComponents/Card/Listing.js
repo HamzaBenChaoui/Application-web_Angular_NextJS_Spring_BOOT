@@ -4,8 +4,7 @@ import "./Listing.css";
 import { motion } from "framer-motion";
 
 const Listing = ({ data, open }) => {
-  const { imageUrl, price, address, numBedroom, numWashrooms, livingSpace } =
-    data;
+  const { image, pureList, nameProducts, type, reference, stack } = data;
 
   return (
     <motion.div className="listing" onClick={open} whileHover={{ scale: 1.1 }}>
@@ -13,22 +12,21 @@ const Listing = ({ data, open }) => {
         <div className="listing__image-container">
           <img
             className="listing__image"
-            alt="real estate mansion"
-            src={imageUrl}
+            alt={nameProducts}
+            src={image}
           />
         </div>
         <div className="listing__details">
-          <div className="listing__type">For Sale</div>
+          <div className="listing__type">{type}</div>
           <div className="listing__row">
-            <span className="listing__price">{price}</span>
+            <span className="listing__price">{pureList}</span>
           </div>
           <div className="listing__row">
-            <span className="listing__address">{address}</span>
+            <span className="listing__address">{nameProducts}</span>
           </div>
           <div className="listing__row">
-            <Feature iconName={"FaBed"} iconLabel={numBedroom} />
-            <Feature iconName={"FaShower"} iconLabel={numWashrooms} />
-            <Feature iconName={"FaRuler"} iconLabel={livingSpace} />
+            <Feature iconName={"FaInfoCircle"} iconLabel={reference} />
+            <Feature iconName={"FaLayerGroup"} iconLabel={stack} />
           </div>
         </div>
       </div>

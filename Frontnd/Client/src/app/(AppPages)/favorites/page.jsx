@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Footer from '../../components/footer/Footer';
+import { useAuth } from '../../context/AuthContext';
+
 
 const GlassCard = ({ children, className = "" }) => (
   <div className={`bg-white/80 backdrop-blur-sm border border-white/30 rounded-2xl shadow-lg ${className}`}>
@@ -13,102 +14,11 @@ const GlassCard = ({ children, className = "" }) => (
 
 export default function FavoritesPage() {
   const router = useRouter();
+  const { favorites, removeFavorite, clearFavorites } = useAuth();
   const [isMounted, setIsMounted] = useState(false);
-  const [favorites, setFavorites] = useState([]);
-
-  // Mock favorites data
-  const mockFavorites = [
-    {
-      id: 1,
-      name: 'Ducati Panigale V4',
-      category: 'motorcycle',
-      type: 'sport',
-      dailyPrice: 199,
-      weeklyPrice: 1199,
-      monthlyPrice: 3999,
-      image: '/moto.jpg',
-      featured: true,
-      specs: {
-        engine: '1103cc',
-        power: '214 HP',
-        weight: '175kg'
-      },
-      availability: 'available'
-    },
-    {
-      id: 2,
-      name: 'Trek Domane SL 7',
-      category: 'bicycle',
-      type: 'road',
-      dailyPrice: 45,
-      weeklyPrice: 250,
-      monthlyPrice: 899,
-      image: '/moto.jpg',
-      featured: true,
-      specs: {
-        weight: '8.5kg',
-        gears: '22',
-        frame: 'Carbon'
-      },
-      availability: 'available'
-    },
-    {
-      id: 3,
-      name: 'Harley Davidson Street Glide',
-      category: 'motorcycle',
-      type: 'cruiser',
-      dailyPrice: 179,
-      weeklyPrice: 999,
-      monthlyPrice: 3299,
-      image: '/moto.jpg',
-      featured: false,
-      specs: {
-        engine: '1868cc',
-        power: '92 HP',
-        weight: '385kg'
-      },
-      availability: 'unavailable'
-    },
-    {
-      id: 4,
-      name: 'Specialized Stumpjumper',
-      category: 'bicycle',
-      type: 'mountain',
-      dailyPrice: 35,
-      weeklyPrice: 199,
-      monthlyPrice: 699,
-      image: '/moto.jpg',
-      featured: false,
-      specs: {
-        weight: '13.2kg',
-        suspension: '150mm',
-        frame: 'Aluminum'
-      },
-      availability: 'available'
-    },
-    {
-      id: 5,
-      name: 'BMW S1000RR',
-      category: 'motorcycle',
-      type: 'sport',
-      dailyPrice: 189,
-      weeklyPrice: 1099,
-      monthlyPrice: 3699,
-      image: '/moto.jpg',
-      featured: false,
-      specs: {
-        engine: '999cc',
-        power: '207 HP',
-        weight: '197kg'
-      },
-      availability: 'available'
-    }
-  ];
 
   useEffect(() => {
     setIsMounted(true);
-    // Simulate loading favorites from localStorage or API
-    setFavorites(mockFavorites);
   }, []);
 
   const formatPrice = (price) => {
@@ -117,18 +27,6 @@ export default function FavoritesPage() {
       currency: 'USD',
       minimumFractionDigits: 0
     }).format(price);
-  };
-
-  const removeFromFavorites = (productId) => {
-    setFavorites(prev => prev.filter(product => product.id !== productId));
-    // In a real app, you would also update localStorage/API here
-    console.log(`Product ${productId} removed from favorites`);
-  };
-
-  const clearAllFavorites = () => {
-    setFavorites([]);
-    // In a real app, you would also update localStorage/API here
-    console.log('All favorites cleared');
   };
 
   const getAvailabilityColor = (status) => {
@@ -201,7 +99,7 @@ export default function FavoritesPage() {
 
           {favorites.length > 0 && (
             <button
-              onClick={clearAllFavorites}
+              onClick={clearFavorites}
               className="flex items-center space-x-2 px-6 py-3 border-2 border-red-300 text-red-600 rounded-xl hover:bg-red-50 transition-all duration-300 font-semibold"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -253,7 +151,7 @@ export default function FavoritesPage() {
                       <div className="flex justify-between items-start mb-2">
                         <h3 className="text-lg font-bold text-gray-900 pr-2">{product.name}</h3>
                         <button
-                          onClick={() => removeFromFavorites(product.id)}
+                          onClick={() => removeFavorite(product.id)}
                           className="p-2 text-gray-400 hover:text-red-500 transition-colors duration-200 hover:scale-110"
                           title="Remove from favorites"
                         >
@@ -280,7 +178,7 @@ export default function FavoritesPage() {
 
                   {/* Specs */}
                   <div className="grid grid-cols-3 gap-2 mb-4 text-xs">
-                    {Object.entries(product.specs).slice(0, 3).map(([key, value]) => (
+                    {product.specs && Object.entries(product.specs).slice(0, 3).map(([key, value]) => (
                       <div key={key} className="text-center p-2 bg-gray-50 rounded-lg border border-gray-100">
                         <div className="font-bold text-[#302652]">{value}</div>
                         <div className="text-gray-600 capitalize mt-1">{key}</div>
@@ -311,7 +209,7 @@ export default function FavoritesPage() {
                     </div>
 
                     <div className="flex space-x-2">
-                        <Link href="/productPage">
+                        <Link href={`/productPage/${product.id}`}>
                       <button
                        // onClick={() => router.push(`/product/${product.id}`)}
                         className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium text-sm"

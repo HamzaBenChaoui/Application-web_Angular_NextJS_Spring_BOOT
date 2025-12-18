@@ -40,14 +40,18 @@ public class Product {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<Promotion> promotions;
+    @Column(nullable = false)
+    private boolean available = true;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Rental> rentals;
+
 
     public enum StatusEnum {
         ACTIVE, INACTIVE
     }
 
     public enum ProductTypeEnum {
-        TYPE_A, TYPE_B, TYPE_C
+        BIKE, MOTORCYCLE
     }
 }

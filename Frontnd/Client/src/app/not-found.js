@@ -50,7 +50,7 @@ export default function NotFound() {
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
               Désolé, la page que vous recherchez semble avoir pris une autre route. 
-              Elle a peut-être été déplacée ou n'existe plus.
+              Elle a peut-être été déplacée ou n&apos;existe plus.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
@@ -79,7 +79,7 @@ export default function NotFound() {
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
             Désolé, la page que vous recherchez semble avoir pris une autre route. 
-            Elle a peut-être été déplacée ou n'existe plus.
+            Elle a peut-être été déplacée ou n&apos;existe plus.
           </p>
         </div>
 

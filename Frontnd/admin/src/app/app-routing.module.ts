@@ -1,3 +1,4 @@
+
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -6,6 +7,7 @@ import { ProductTableComponent } from './product-table/product-table.component';
 import { CategorieTableComponent } from './categorie-table/categorie-table.component';
 import { SigninComponent } from './signin/signin.component';
 import { ProfileComponent } from './profile/profile.component';
+import { RentalComponent } from './rental/rental.component';
 
 import { AdminComponent } from './layouts/admin/admin.component';
 
@@ -21,7 +23,8 @@ const routes: Routes = [
       { path: 'user-profile', component: UserProfilComponent },
       { path: 'product-table', component: ProductTableComponent },
       { path: 'categorie-table', component: CategorieTableComponent },
-      { path: 'profile', component: ProfileComponent }
+      { path: 'profile', component: ProfileComponent },
+      { path: 'rental', component: RentalComponent }
     ]
   },
   // Optional: Redirect any other path to signin

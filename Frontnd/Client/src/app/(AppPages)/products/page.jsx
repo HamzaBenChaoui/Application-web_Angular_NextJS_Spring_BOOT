@@ -1,143 +1,24 @@
 "use client";
 
 import Link from 'next/link';
-import { useState, useEffect, Suspense } from 'react';
+import { getProducts } from '@/app/services/productService';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
-// import Footer from '../../components/footer/Footer'; // Décommentez si vous l'utilisez
-import { EyeIcon } from '@heroicons/react/24/solid';
-// --- AJOUTÉ ---
-// 1. Importer le Modal et l'icône de paiement
-import CheckoutModal from '@/components/CheckoutModal'; // ATTENTION: J'ai corrigé ce chemin
-import { CreditCardIcon } from '@heroicons/react/24/outline'; // Icône pour le paiement
+import Footer from '../../components/footer/Footer';
+import { useAuth } from '../../context/AuthContext';
+import { useRouter } from 'next/navigation';
 
-// Données fictives pour les produits
-const mockProducts = [
-  // ... (Vos données produits restent identiques)
-  {
-    id: 1,
-    name: 'Ducati Panigale V4',
-    category: 'motorcycle',
-    type: 'sport',
-    price: 24999,
-    image: '/moto.jpg',
-    featured: true,
-    specs: {
-      engine: '1103cc',
-      power: '214 HP',
-      weight: '175kg'
-    }
-  },
-  {
-    id: 2,
-    name: 'Harley Davidson Street Glide',
-    category: 'motorcycle',
-    type: 'cruiser',
-    price: 21999,
-    image: '/moto.jpg',
-    featured: false,
-    specs: {
-      engine: '1868cc',
-      power: '92 HP',
-      weight: '385kg'
-    }
-  },
-  {
-    id: 3,
-    name: 'Trek Domane SL 7',
-    category: 'bicycle',
-    type: 'road',
-    price: 5499,
-    image: 'https://img.freepik.com/photos-gratuite/velo-blanc-debout-dans-parc_1153-7319.jpg',
-    featured: true,
-    specs: {
-      weight: '8.5kg',
-      gears: '22',
-      frame: 'Carbon'
-    }
-  },
-  {
-    id: 4,
-    name: 'Specialized Stumpjumper',
-    category: 'bicycle',
-    type: 'mountain',
-    price: 3299,
-    image: 'https://images.pexels.com/photos/100582/pexels-photo-100582.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
-    featured: false,
-    specs: {
-      weight: '13.2kg',
-      suspension: '150mm',
-      frame: 'Aluminum'
-    }
-  },
-  {
-    id: 5,
-    name: 'Yamaha MT-07',
-    category: 'motorcycle',
-    type: 'naked',
-    price: 7699,
-    image: '/moto.jpg',
-    featured: false,
-    specs: {
-      engine: '689cc',
-      power: '74 HP',
-      weight: '184kg'
-    }
-  },
-  {
-    id: 6,
-    name: 'Giant Defy Advanced 2',
-    category: 'bicycle',
-    type: 'endurance',
-    price: 2899,
-    image: 'https://images.unsplash.com/photo-1618762044398-ec1e7e048bbd?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8diVDMyVBOWxvfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=600',
-    featured: false,
-    specs: {
-      weight: '8.9kg',
-      gears: '22',
-      frame: 'Carbon'
-    }
-  },
-  {
-    id: 7,
-    name: 'KTM 390 Duke',
-    category: 'motorcycle',
-    type: 'naked',
-    price: 5599,
-    image: '/moto.jpg',
-    featured: false,
-    specs: {
-      engine: '373cc',
-      power: '44 HP',
-      weight: '149kg'
-    }
-  },
-  {
-    id: 8,
-    name: 'Cannondale Trail 6',
-    category: 'bicycle',
-    type: 'mountain',
-    price: 899,
-    image: 'https://images.unsplash.com/photo-1618762044398-ec1e7e048bbd?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8diVDMyVBOWxvfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=600',
-    featured: false,
-    specs: {
-      weight: '14.1kg',
-      suspension: '100mm',
-      frame: 'Aluminum'
-    }
-  }
-];
 
-const motorcycleTypes = ['Tous', 'sport', 'cruiser', 'naked', 'adventure'];
-const bicycleTypes = ['Tous', 'route', 'mountain', 'endurance', 'gravel'];
 
-// ... (Le composant GlassCard reste identique)
+// Données ne sont plus fictives, elles proviennent de l'API
+
 const GlassCard = ({ children, className = "" }) => (
   <div className={`bg-white/80 backdrop-blur-sm border border-white/30 rounded-xl shadow-lg ${className}`}>
     {children}
   </div>
 );
 
-// ... (Le composant PriceRangeSlider reste identique)
+// Composant Curseur de Plage de Prix
 const PriceRangeSlider = ({ minPrice, maxPrice, value, onChange }) => {
   const [localValue, setLocalValue] = useState(value);
   
@@ -184,7 +65,7 @@ const PriceRangeSlider = ({ minPrice, maxPrice, value, onChange }) => {
           className="absolute top-1/2 left-0 w-full h-2 -translate-y-1/2 opacity-0 cursor-pointer z-20"
         />
         
-        {/* Curseur personnalisé - Positionné correctly */}
+        {/* Curseur personnalisé - Positionné correctement */}
         <div 
           className="absolute top-1/2 w-4 h-4 bg-white border-2 border-[#bb00cc] rounded-full shadow-lg transform -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform duration-200 z-10"
           style={{ 
@@ -202,48 +83,71 @@ const PriceRangeSlider = ({ minPrice, maxPrice, value, onChange }) => {
   );
 };
 
-function ProductsPageComponent() {
+export default function ProductsPage() {
+  const { isLoggedIn, isLoading, favorites, addFavorite, removeFavorite } = useAuth(); // Get auth and favorites state
+  const router = useRouter(); // Get router for redirection
   const searchParams = useSearchParams();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [filters, setFilters] = useState({
-    category: 'all',
+    category: searchParams.get('category') || 'all',
     type: 'Tous',
     priceRange: 25000,
-    sortBy: 'featured'
+    sortBy: 'featured',
+    status: searchParams.get('status') || null,
+    available: searchParams.get('available') || null
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [isGridView, setIsGridView] = useState(true);
-  const [likedProducts, setLikedProducts] = useState(new Set());
-  const [isMounted, setIsMounted] = useState(false);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+  const [errorLoadingProducts, setErrorLoadingProducts] = useState(null);
 
-  // --- AJOUTÉ ---
-  // 2. States pour gérer le modal de paiement
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  // A set of favorite IDs for quick lookups
+  const likedProductIds = new Set(favorites.map(p => p.id));
 
-  // ... (useEffect pour initialiser les produits reste identique)
   useEffect(() => {
-    setIsMounted(true);
-    setProducts(mockProducts);
-    setFilteredProducts(mockProducts);
-    
-    // Calculer le prix maximum et définir le filtre initial
-    const maxPrice = Math.max(...mockProducts.map(product => product.price));
-    const defaultMaxPrice = Math.ceil(maxPrice / 1000) * 1000;
-    
-    const categoryFromUrl = searchParams.get('category');
+    // Wait until auth check is complete
+    if (isLoading) {
+      return;
+    }
 
-    setFilters(prev => ({
-      ...prev,
-      priceRange: defaultMaxPrice,
-      category: categoryFromUrl || 'all'
-    }));
-  }, [searchParams]);
+    // Redirect if not logged in
+    if (!isLoggedIn) {
+      router.push('/login');
+      return; // Stop further execution
+    }
 
-  // ... (useEffect pour filtrer les produits reste identique)
+    const fetchProductsData = async () => {
+      setIsLoadingProducts(true);
+      setErrorLoadingProducts(null);
+      try {
+        const data = await getProducts();
+        setProducts(data);
+        setFilteredProducts(data);
+        
+        const maxPrice = Math.max(...data.map(product => product.stack));
+        const defaultMaxPrice = Math.ceil(maxPrice / 1000) * 1000;
+        
+        setFilters(prev => ({
+          ...prev,
+          priceRange: defaultMaxPrice
+        }));
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setErrorLoadingProducts("Impossible de charger les produits.");
+      } finally {
+        setIsLoadingProducts(false);
+      }
+    };
+
+    fetchProductsData();
+  }, [isLoggedIn, isLoading, router]); // Re-run effect if auth state changes
+
+  // ... (existing isLoadingProducts and errorLoadingProducts checks)
+
+
   useEffect(() => {
-    if (!isMounted) return;
+    if (isLoadingProducts) return;
     
     let filtered = [...products];
 
@@ -253,22 +157,35 @@ function ProductsPageComponent() {
       );
     }
 
-    if (filters.category !== 'all') {
-      filtered = filtered.filter(product => product.category === filters.category);
+    if (filters.status) {
+      // Assurez-vous que le produit a un statut, puis comparez en MAJUSCULES
+      filtered = filtered.filter(product => {
+        return product.status && product.status.toUpperCase() === filters.status;
+      });
+    }
+
+    // **Optionnellement, pour le filtre de catégorie :**
+    // NOUVEAU : product.categoryName
+      if (filters.category !== 'all') {
+        filtered = filtered.filter(product => product.categoryName && product.categoryName.toUpperCase() === filters.category);
+      }
+
+    if (filters.available) {
+      filtered = filtered.filter(product => String(product.available) === filters.available);
     }
 
     if (filters.type !== 'Tous') {
       filtered = filtered.filter(product => product.type === filters.type);
     }
 
-    filtered = filtered.filter(product => product.price <= filters.priceRange);
+    filtered = filtered.filter(product => product.stack <= filters.priceRange);
 
     switch (filters.sortBy) {
       case 'price-low':
-        filtered.sort((a, b) => a.price - b.price);
+        filtered.sort((a, b) => a.stack - b.stack);
         break;
       case 'price-high':
-        filtered.sort((a, b) => b.price - b.price);
+        filtered.sort((a, b) => b.stack - a.stack);
         break;
       case 'name':
         filtered.sort((a, b) => a.name.localeCompare(b.name));
@@ -278,7 +195,24 @@ function ProductsPageComponent() {
     }
 
     setFilteredProducts(filtered);
-  }, [filters, searchTerm, products, isMounted]);
+  }, [filters, searchTerm, products, isLoadingProducts]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <p className="text-lg text-gray-700">Vérification de l'authentification...</p>
+      </div>
+    );
+  }
+
+  // ... (rest of the component, including the return statement with the conditional rendering)
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <p className="text-lg text-gray-700">Redirection vers la page de connexion...</p>
+      </div>
+    );
+  }
 
   const handleFilterChange = (filterType, value) => {
     setFilters(prev => ({
@@ -294,23 +228,26 @@ function ProductsPageComponent() {
     }));
   };
 
-  const toggleLike = (productId) => {
-    setLikedProducts(prev => {
-      const newLiked = new Set(prev);
-      if (newLiked.has(productId)) {
-        newLiked.delete(productId);
-      } else {
-        newLiked.add(productId);
-      }
-      return newLiked;
-    });
+  const toggleLike = (product) => {
+    if (likedProductIds.has(product.id)) {
+      removeFavorite(product.id);
+    } else {
+      addFavorite(product);
+    }
   };
 
   const getTypeOptions = () => {
-    if (filters.category === 'motorcycle') return motorcycleTypes;
-    if (filters.category === 'bicycle') return bicycleTypes;
-    return ['Tous'];
-  };
+    if (filters.category === 'all') {
+      const allTypes = products.map(p => p.type).filter((value, index, self) => self.indexOf(value) === index);
+      return ['Tous', ...allTypes];
+    }
+    // NOUVEAU : Utilisation dans getTypeOptions
+    const typesForCategory = products
+      .filter(p => p.categoryName === filters.category) // <--- CORRIGÉ
+      .map(p => p.type)
+      .filter((value, index, self) => self.indexOf(value) === index);
+    return ['Tous', ...typesForCategory];
+      };
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-US', {
@@ -319,60 +256,65 @@ function ProductsPageComponent() {
       minimumFractionDigits: 0
     }).format(price);
   };
-  
-  // --- AJOUTÉ ---
-  // 3. Fonctions pour ouvrir et fermer le modal
-  const handleOpenCheckout = (product) => {
-    setSelectedProduct(product);
-    setIsModalOpen(true);
-  };
 
-  const handleCloseCheckout = () => {
-    setIsModalOpen(false);
-    setSelectedProduct(null); // Réinitialiser le produit sélectionné
-  };
-
-
-  // ... (Code de chargement reste identique)
-  if (!isMounted) {
+  if (isLoadingProducts) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50">
         <div className="max-w-7xl mx-auto px-4 py-12">
           <div className="flex justify-center items-center h-64">
-            <div className="text-lg text-gray-600">Chargement...</div>
+            <div className="text-lg text-gray-600">Chargement des produits...</div>
           </div>
         </div>
       </div>
     );
   }
 
-  // ... (Calcul des prix min/max reste identique)
-  const minPrice = 0;
-  const maxPrice = Math.max(...products.map(product => product.price));
-  const defaultMaxPrice = Math.ceil(maxPrice / 1000) * 1000;
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50">
-      {/* ... (Section Hero reste identique) */}
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              Trouvez Votre Véhicule Idéal
-            </h1>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Découvrez notre collection premium de motos et vélos pour chaque aventure
-            </p>
+  if (errorLoadingProducts) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50">
+        <div className="max-w-7xl mx-auto px-4 py-12">
+          <div className="flex justify-center items-center h-64 text-red-500">
+            <div className="text-lg">{errorLoadingProducts}</div>
           </div>
         </div>
       </div>
+    );
+  }
+console.log(products);
+  // Calculer les prix min et max, en gérant le cas où le tableau des produits est vide
+  const minPrice = 0;
+  const maxPrice = products.length > 0 ? Math.max(...products.map(product => product.stack)) : 0;
+  const defaultMaxPrice = products.length > 0 ? Math.ceil(maxPrice / 1000) * 1000 : 1000;
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50">
+      {/* Section Hero */}
+      <div className="relative bg-gradient-to-r from-[#302652] to-[#1a1a2e] text-white py-20 overflow-hidden">
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `radial-gradient(circle at 25% 25%, #bb00cc 1px, transparent 1px)`,
+            backgroundSize: '40px 40px'
+          }} />
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
+          <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+            Trouvez Votre Véhicule Idéal
+          </h1>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            Découvrez notre collection premium de motos et vélos pour chaque aventure
+          </p>
+        </div>
+      </div>
+
+
 
       {/* Filtres et Produits */}
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Grille de Produits */}
+          {/* Grille de Produits - Maintenant à gauche */}
           <div className="flex-1">
-            {/* ... (En-tête des Résultats reste identique) */}
+            {/* En-tête des Résultats */}
             <div className="flex justify-between items-center mb-8">
               <p className="text-gray-600 text-lg font-medium">
                 Affichage de <span className="text-[#302652] font-bold">{filteredProducts.length}</span> sur{" "}
@@ -412,7 +354,6 @@ function ProductsPageComponent() {
 
             {/* Produits */}
             {filteredProducts.length === 0 ? (
-              // ... (Code "Aucun produit" reste identique)
               <div className="text-center py-16">
                 <svg className="w-16 h-16 text-gray-400 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -431,7 +372,7 @@ function ProductsPageComponent() {
                     key={product.id}
                     className="group bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col"
                   >
-                    {/* ... (Section Image reste identique) */}
+                    {/* Section Image */}
                     <div className="relative h-48 overflow-hidden">
                       <img
                         src={product.image}
@@ -451,29 +392,21 @@ function ProductsPageComponent() {
                       </span>
                     </div>
                     
-                    {/* ... (Section Contenu reste identique) */}
+                    {/* Section Contenu */}
                     <div className="p-6 flex flex-col flex-grow">
                       <div className="flex justify-between items-start mb-4">
                         <h3 className="text-xl font-bold text-gray-900 pr-2 line-clamp-2 flex-1">
-                          {product.name}
+                          {product.nameProducts}
                         </h3>
                         <span className="text-2xl font-bold text-[#302652] whitespace-nowrap ml-2">
-                          {formatPrice(product.price)}
+                          {formatPrice(product.stack)}
                         </span>
                       </div>
                       
-                      <div className="flex items-center mb-4">
-                        <span className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${
-                          product.category === 'motorcycle' 
-                            ? 'bg-blue-100 text-blue-800 border border-blue-200'
-                            : 'bg-green-100 text-green-800 border border-green-200'
-                        }`}>
-                          {product.category === 'motorcycle' ? 'moto' : 'vélo'}
-                        </span>
-                      </div>
+                    
 
                       <div className="grid grid-cols-3 gap-2 mb-6 text-sm">
-                        {Object.entries(product.specs).map(([key, value]) => (
+                        {product.specs && Object.entries(product.specs).map(([key, value]) => (
                           <div key={key} className="text-center p-2 bg-gray-50 rounded-lg border border-gray-100">
                             <div className="font-bold text-[#302652]">{value}</div>
                             <div className="text-xs text-gray-600 capitalize mt-1">
@@ -488,42 +421,24 @@ function ProductsPageComponent() {
                         ))}
                       </div>
 
-                      {/* --- MODIFIÉ --- */}
-                      {/* 4. Modification de la barre de boutons */}
                       <div className="flex space-x-3 mt-auto pt-4">
-                        
-                        {/* --- MODIFICATION DEMANDÉE --- */}
-                        {/* On utilise un template literal (les `) pour passer l'ID du produit dans l'URL. */}
-                        <Link href="/productPage" className="flex-1">
-                          <button className="w-full bg-gradient-to-r from-[#bb00cc] to-purple-600 text-white py-3 px-6 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center">
-                                        {/* Le texte est remplacé par l'icône */}
-                                        <EyeIcon className="h-6 w-6 mx-auto" /> 
-                             </button>
-                        </Link>
-                        {/* --- AJOUTÉ --- */}
-                        {/* Nouveau Bouton Payer */}
-                        <button 
-                          className="p-3 border border-gray-300 rounded-xl text-green-600 hover:bg-gray-50 hover:border-green-400 transition-all duration-300 hover:scale-105 flex items-center justify-center"
-                          onClick={() => handleOpenCheckout(product)}
-                          title="Payer maintenant"
-                        >
-                          <CreditCardIcon className="w-6 h-6" />
+                        <Link href={`/productPage/${product.id}`} >
+                        <button className="flex-1 bg-gradient-to-r from-[#bb00cc] to-purple-600 text-white py-3 px-6 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center">
+                          Voir les Détails
                         </button>
-                        
-                        {/* Bouton Wishlist (Like) */}
-                        <button 
+                        </Link>
+                        <button
                           className="p-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-300 hover:scale-105 flex items-center justify-center"
-                          onClick={() => toggleLike(product.id)}
-                          title="Ajouter aux favoris"
+                          onClick={() => toggleLike(product)}
                         >
-                          <svg 
+                          <svg
                             className={`w-6 h-6 transition-all duration-300 ${
-                              likedProducts.has(product.id) 
-                                ? 'text-red-500 fill-red-500 scale-110' 
+                              likedProductIds.has(product.id)
+                                ? 'text-red-500 fill-red-500 scale-110'
                                 : 'text-gray-600 hover:text-red-500'
                             }`}
-                            fill={likedProducts.has(product.id) ? "currentColor" : "none"} 
-                            stroke="currentColor" 
+                            fill={likedProductIds.has(product.id) ? "currentColor" : "none"}
+                            stroke="currentColor"
                             viewBox="0 0 24 24"
                           >
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
@@ -537,46 +452,50 @@ function ProductsPageComponent() {
             )}
           </div>
 
-          {/* ... (Barre latérale des Filtres reste identique) */}
+          {/* Barre latérale des Filtres - Maintenant à droite et plus petite */}
           <div className="lg:w-64 space-y-4">
             {/* Recherche */}
-            <GlassCard className="p-4">
-              <h3 className="font-semibold text-[#302652] mb-3 text-base">Recherche</h3>
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Rechercher des produits..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-3 py-2 text-sm bg-white/70 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#bb00cc] focus:border-transparent transition-all duration-200"
-                />
-                <svg className="w-4 h-4 text-gray-400 absolute right-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
-              </div>
-            </GlassCard>
+        
 
             {/* Filtre Catégorie */}
+      
+            
+            {/* Filtre Statut */}
             <GlassCard className="p-4">
-              <h3 className="font-semibold text-[#302652] mb-3 text-base">Catégorie</h3>
+              <h3 className="font-semibold text-[#302652] mb-3 text-base">État</h3>
               <div className="space-y-2">
-                {['all', 'motorcycle', 'bicycle'].map((category) => (
-                  <label key={category} className="flex items-center group cursor-pointer transition-all duration-200 hover:translate-x-1">
+                {['all', 'ACTIVE', 'INACTIVE'].map((status) => (
+                  <label key={status} className="flex items-center group cursor-pointer transition-all duration-200 hover:translate-x-1">
                     <input
                       type="radio"
-                      name="category"
-                      value={category}
-                      checked={filters.category === category}
-                      onChange={(e) => handleFilterChange('category', e.target.value)}
+                      name="status"
+                      value={status}
+                      checked={filters.status === status || (status === 'all' && !filters.status)}
+                      onChange={(e) => handleFilterChange('status', e.target.value === 'all' ? null : e.target.value)}
                       className="w-3.5 h-3.5 text-[#bb00cc] border-gray-300 focus:ring-[#bb00cc]"
                     />
                     <span className="ml-2 text-sm text-gray-700 capitalize font-medium group-hover:text-[#302652] transition-colors">
-                      {category === 'all' ? 'Toutes les catégories' : 
-                       category === 'motorcycle' ? 'motos' : 'vélos'}
+                      {status === 'all' ? 'Tous les états' : 
+                       status === 'ACTIVE' ? 'Actif' : 'Inactif'}
                     </span>
                   </label>
                 ))}
               </div>
+            </GlassCard>
+
+            {/* Filtre Disponibilité */}
+            <GlassCard className="p-4">
+                <label className="flex items-center group cursor-pointer transition-all duration-200">
+                    <input
+                        type="checkbox"
+                        checked={!!filters.available}
+                        onChange={(e) => handleFilterChange('available', e.target.checked ? 'true' : false)}
+                        className="w-4 h-4 text-[#bb00cc] border-gray-300 rounded focus:ring-[#bb00cc]"
+                    />
+                    <span className="ml-2 text-sm text-gray-700 font-medium group-hover:text-[#302652] transition-colors">
+                        Disponible maintenant
+                    </span>
+                </label>
             </GlassCard>
 
             {/* Filtre Type */}
@@ -636,31 +555,12 @@ function ProductsPageComponent() {
                 <option value="featured">En vedette</option>
                 <option value="price-low">Prix : Croissant</option>
                 <option value="price-high">Prix : Décroissant</option>
-                <option value="name">Nom : A à Z</option>
               </select>
             </GlassCard>
           </div>
-
         </div>
       </div>
      
-      {/* --- AJOUTÉ --- */}
-      {/* 5. Le composant Modal est maintenant rendu ici */}
-      <CheckoutModal
-        isOpen={isModalOpen}
-        onClose={handleCloseCheckout}
-        // Nous passons le prix du produit sélectionné au modal
-        totalAmount={selectedProduct ? selectedProduct.price : 0}
-      />
-
     </div>
-  );
-}
-
-export default function ProductsPage() {
-  return (
-    <Suspense fallback={<div>Chargement des filtres...</div>}>
-      <ProductsPageComponent />
-    </Suspense>
   );
 }

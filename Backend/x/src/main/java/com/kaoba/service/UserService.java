@@ -4,6 +4,7 @@ import com.kaoba.dto.UserDTO;
 import com.kaoba.entity.User;
 import com.kaoba.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +15,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
@@ -26,6 +30,8 @@ public class UserService {
 
     public UserDTO createUser(User user) {
         // In a real application, you'd hash the password here before saving
+        user.setRole(User.UserRoleEnum.USER);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
         return convertToDTO(savedUser);
     }
@@ -44,6 +50,18 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    public void changePassword(Long userId, String oldPassword, String newPassword) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new RuntimeException("Incorrect old password");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
     private UserDTO convertToDTO(User user) {
         return UserDTO.builder()
                 .id(user.getId())
@@ -52,4 +70,5 @@ public class UserService {
                 .role(user.getRole())
                 .build();
     }
+
 }

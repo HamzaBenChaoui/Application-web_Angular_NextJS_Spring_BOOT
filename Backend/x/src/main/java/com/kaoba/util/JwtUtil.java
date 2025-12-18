@@ -1,9 +1,11 @@
 package com.kaoba.util;
 
+import com.kaoba.service.CustomUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,8 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
+    private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
+
     @Value("${jwt.secret.key}")
     private String secretKeyString;
 
@@ -25,8 +29,6 @@ public class JwtUtil {
     private long expirationTime;
 
     private SecretKey getSigningKey() {
-        // The secret key should be strong enough for the chosen algorithm.
-        // For HS256, it should be at least 256 bits (32 bytes).
         return Keys.hmacShaKeyFor(secretKeyString.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -56,7 +58,15 @@ public class JwtUtil {
     }
 
     public String generateToken(UserDetails userDetails) {
+        logger.debug("Generating token for userDetails of type: {}", userDetails.getClass().getName());
         Map<String, Object> claims = new HashMap<>();
+        if (userDetails instanceof CustomUserDetails) {
+            CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
+            claims.put("id", customUserDetails.getId());
+            logger.debug("Added id to claims: {}", customUserDetails.getId());
+        } else {
+            logger.warn("userDetails is not an instance of CustomUserDetails, it is: {}", userDetails.getClass().getName());
+        }
         return createToken(claims, userDetails.getUsername());
     }
 

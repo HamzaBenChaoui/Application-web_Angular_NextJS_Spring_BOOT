@@ -46,26 +46,40 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
+        // --- MODIFICATION HERE ---
+        configuration.setAllowedOrigins(List.of("http://localhost:4200", "http://localhost:3000")); // Added port 3000
+        // --- END MODIFICATION ---
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        // I also recommend adding allowCredentials(true) if your Angular/Next.js app sends cookies or Authorization headers
+        configuration.setAllowCredentials(true); 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtRequestFilter jwtRequestFilter) throws Exception {
-        http.cors(Customizer.withDefaults())
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login").permitAll()
-                        .requestMatchers("/api/**").authenticated()
-                )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+// Dans SecurityConfig.java
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtRequestFilter jwtRequestFilter) throws Exception {
+    http.cors(Customizer.withDefaults())
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers(
+                        "/api/auth/login", 
+                        "/api/user/auth/login",
+                        // --- AJOUTER L'ENDPOINT REGISTER ICI ---
+                        "/api/user/auth/register",
+                        "/api/products",
+                        "/api/products/{id}",
+                        "/api/rentals",
+                        "/api/rentals//user/{userId}"
+                    ).permitAll() // Ces chemins sont accessibles à tous
+                    .requestMatchers("/api/**").authenticated() // Tous les autres chemins /api/** nécessitent un jeton JWT
+            )
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+    http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+    return http.build();
+}
 }

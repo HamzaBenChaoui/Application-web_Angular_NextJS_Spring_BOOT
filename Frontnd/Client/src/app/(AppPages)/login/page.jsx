@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 
 export default function LoginForm() {
   const [formData, setFormData] = useState({
@@ -8,6 +9,8 @@ export default function LoginForm() {
     password: ''
   });
   const [errors, setErrors] = useState({});
+  const [loginError, setLoginError] = useState('');
+  const { login } = useAuth();
 
   const validateForm = () => {
     const newErrors = {};
@@ -28,11 +31,21 @@ export default function LoginForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoginError(''); // Clear previous errors on a new submission
+
     if (validateForm()) {
-      console.log('Login data:', formData);
-      // Handle login logic here
+      try {
+        await login(formData.email, formData.password);
+        // On success, the routing is handled by the AuthContext
+      } catch (error) {
+        if (error.status === 401 || error.status === 403) {
+          setLoginError("Email ou mot de passe incorrect.");
+        } else {
+          setLoginError(error.message || "Une erreur s'est produite. Veuillez réessayer.");
+        }
+      }
     }
   };
 
@@ -51,9 +64,9 @@ export default function LoginForm() {
           <div className="w-64 h-64 mx-auto mb-8 bg-[#bb00cc] bg-opacity-10 rounded-full flex items-center justify-center">
   <span className="text-9xl"></span>
 </div>
-          <h2 className="text-3xl font-bold text-[#302652] mb-4">Welcome Back Rider!</h2>
+          <h2 className="text-3xl font-bold text-[#302652] mb-4">Bon retour parmi nous !</h2>
           <p className="text-gray-600 text-lg">
-            Sign in to access your account and continue your riding journey with us.
+            Connectez-vous pour accéder à votre compte et poursuivre votre aventure avec nous.
           </p>
         </div>
       </div>
@@ -62,14 +75,19 @@ export default function LoginForm() {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-[#302652]">Sign In</h1>
-            <p className="text-gray-600 mt-2">Enter your credentials to access your account</p>
+            <h1 className="text-3xl font-bold text-[#302652]">Connexion</h1>
+            <p className="text-gray-600 mt-2">Entrez vos identifiants pour accéder à votre compte</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {loginError && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <span className="block sm:inline">{loginError}</span>
+              </div>
+            )}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
+                Adresse e-mail
               </label>
               <input
                 type="email"
@@ -78,7 +96,7 @@ export default function LoginForm() {
                 onChange={handleChange}
                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#bb00cc] focus:border-transparent transition-all ${errors.email ? 'border-red-500' : 'border-gray-300'
                   }`}
-                placeholder="Enter your email"
+                placeholder="Entrez votre adresse e-mail"
               />
               {errors.email && (
                 <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -87,7 +105,7 @@ export default function LoginForm() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password
+                Mot de passe
               </label>
               <input
                 type="password"
@@ -96,7 +114,7 @@ export default function LoginForm() {
                 onChange={handleChange}
                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#bb00cc] focus:border-transparent transition-all ${errors.password ? 'border-red-500' : 'border-gray-300'
                   }`}
-                placeholder="Enter your password"
+                placeholder="Entrez votre mot de passe"
               />
               {errors.password && (
                 <p className="text-red-500 text-sm mt-1">{errors.password}</p>
@@ -106,10 +124,10 @@ export default function LoginForm() {
             <div className="flex items-center justify-between">
               <label className="flex items-center">
                 <input type="checkbox" className="w-4 h-4 text-[#bb00cc] border-gray-300 rounded focus:ring-[#bb00cc]" />
-                <span className="ml-2 text-sm text-gray-600">Remember me</span>
+                <span className="ml-2 text-sm text-gray-600">Se souvenir de moi</span>
               </label>
               <a href="#" className="text-sm text-[#bb00cc] hover:text-[#302652] transition-colors">
-                Forgot password?
+                Mot de passe oublié ?
               </a>
             </div>
 
@@ -117,15 +135,15 @@ export default function LoginForm() {
               type="submit"
               className="w-full bg-[#bb00cc] text-white py-3 px-4 rounded-lg font-semibold hover:bg-[#a500b8] transition-all duration-200 text-lg"
             >
-              Sign In
+              Se connecter
             </button>
           </form>
 
           <div className="mt-8 pt-6 border-t border-gray-200">
             <p className="text-center text-gray-600">
-              Don't have an account?{' '}
+              Vous n'avez pas de compte ?{' '}
               <a href="/signup" className="text-[#bb00cc] font-semibold hover:text-[#302652] transition-colors">
-                Create one here
+                Créez-en un ici
               </a>
             </p>
           </div>
@@ -134,11 +152,11 @@ export default function LoginForm() {
           <div className="mt-8 grid grid-cols-3 gap-4 text-center">
             <div>
               <div className="text-2xl font-bold text-[#302652]">500+</div>
-              <div className="text-sm text-gray-600">Riders</div>
+              <div className="text-sm text-gray-600">Cyclistes</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-[#302652]">1.2k</div>
-              <div className="text-sm text-gray-600">Vehicles</div>
+              <div className="text-sm text-gray-600">Véhicules</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-[#302652]">99%</div>

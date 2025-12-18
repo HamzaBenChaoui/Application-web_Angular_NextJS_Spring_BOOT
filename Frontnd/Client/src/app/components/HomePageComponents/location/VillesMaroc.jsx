@@ -26,25 +26,26 @@ export default function VillesMaroc() {
       </h2>
 
       {/* Section des villes */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-y-14 gap-x-8 justify-items-center">
-        {villes.map((ville) => (
-          <div
-            key={ville.nom}
-            className="flex flex-col items-center space-y-3"
-          >
-            <div className="w-[100px] h-[100px] rounded-md overflow-hidden shadow-lg">
-              <Image
-                src={ville.image}
-                alt={ville.nom}
-                width={100}
-                height={100}
-                className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-            <p className="text-lg font-medium text-[#2B1C50]">{ville.nom}</p>
-          </div>
-        ))}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-y-14 gap-x-8 justify-items-center">
+  {villes.map((ville) => (
+    <div
+      key={ville.nom}
+      className="flex flex-col items-center space-y-3"
+    >
+      <div className="w-[100px] h-[100px] rounded-md overflow-hidden shadow-lg">
+        <Image
+          src={ville.image}
+          alt={ville.nom}
+          width={100}
+          height={100}
+          className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
+        />
       </div>
+      <p className="text-lg font-medium text-[#2B1C50]">{ville.nom}</p>
+    </div>
+  ))}
+</div>
+
 
       {/* Boutons */}
       <div className="flex flex-wrap justify-center gap-4 mt-20">

@@ -18,4 +18,5 @@ public class ProductDTO {
     private String type;
     private Long categoryId;
     private String categoryName;
+    private boolean available;
 }

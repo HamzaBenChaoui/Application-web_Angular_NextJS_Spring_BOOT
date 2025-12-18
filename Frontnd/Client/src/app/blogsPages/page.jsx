@@ -1,5 +1,5 @@
 import BlogCard from "../components/blogComponents/blogCard";
-import BlogFooter from "../components/BlogFooter";
+import BlogFooter from "../components/blogComponents/BlogFooter";
 import BlogsCarousel from "../components/blogComponents/BlogsCarousel";
 import { blogPosts } from "../data/blogs-data";
 
@@ -39,7 +39,7 @@ export default function BlogsPage() {
           ))}
         </div>
       </div>
-
+      <BlogFooter />
     </div>
   );
 }

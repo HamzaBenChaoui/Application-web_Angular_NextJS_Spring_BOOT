@@ -1,7 +1,10 @@
+
 package com.kaoba.config;
 
 import com.kaoba.entity.Admin;
+import com.kaoba.entity.User;
 import com.kaoba.repository.AdminRepository;
+import com.kaoba.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,9 @@ public class DataSeeder implements CommandLineRunner {
 
     @Autowired
     private AdminRepository adminRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -39,6 +45,27 @@ public class DataSeeder implements CommandLineRunner {
         logger.info("Default admin account created successfully.");
         logger.info("You can now login with the following credentials:");
         logger.info("Email: admin@kaoba.com");
+        logger.info("Password: password123");
+
+        // Forcefully reset the default user account on every startup
+        userRepository.findByEmail("user@kaoba.com").ifPresent(user -> {
+            logger.warn("Default user account 'user@kaoba.com' found. Deleting it to ensure a clean state.");
+            userRepository.delete(user);
+        });
+
+        logger.info("Creating a new default user account (user@kaoba.com).");
+
+        User defaultUser = new User();
+        defaultUser.setEmail("user@kaoba.com");
+        defaultUser.setNom("Default User");
+        defaultUser.setRole(User.UserRoleEnum.USER);
+        defaultUser.setPassword(passwordEncoder.encode("password123")); // Encode password on creation
+
+        userRepository.save(defaultUser);
+
+        logger.info("Default user account created successfully.");
+        logger.info("You can now login with the following credentials:");
+        logger.info("Email: user@kaoba.com");
         logger.info("Password: password123");
     }
 }

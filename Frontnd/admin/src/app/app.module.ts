@@ -12,12 +12,15 @@ import { AdminModule } from './layouts/admin.module';
 import { ProfileComponent } from './profile/profile.component';
 import { ProductService } from './product.service';
 import { JwtInterceptor } from './jwt.interceptor'; // Import the interceptor
+import { RentalComponent } from './rental/rental.component';
+import { RentalService } from './rental/rental.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     SigninComponent,
     ProfileComponent,
+    RentalComponent,
   ],
   imports: [
     BrowserModule,
@@ -30,6 +33,7 @@ import { JwtInterceptor } from './jwt.interceptor'; // Import the interceptor
   ],
   providers: [
     ProductService,
+    RentalService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true } // Provide the interceptor
   ],
   bootstrap: [AppComponent],

@@ -2,6 +2,7 @@ package com.kaoba.service;
 
 import com.kaoba.entity.Admin;
 import com.kaoba.repository.AdminRepository;
+import com.kaoba.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,22 +23,28 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private AdminRepository adminRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         logger.info("Attempting to load user by email: {}", email);
+        
         Optional<Admin> adminOptional = adminRepository.findByEmail(email);
-
-        if (adminOptional.isEmpty()) {
-            logger.warn("User not found with email: {}", email);
-            throw new UsernameNotFoundException("User not found with email: " + email);
+        if (adminOptional.isPresent()) {
+            Admin admin = adminOptional.get();
+            logger.info("Admin user found: {}. Retrieving hashed password.", email);
+            return new CustomUserDetails(admin.getEmail(), admin.getPassword(), new ArrayList<>(), admin.getId());
         }
 
-        Admin admin = adminOptional.get();
-        logger.info("User found: {}. Retrieving hashed password.", email);
+        Optional<com.kaoba.entity.User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            com.kaoba.entity.User user = userOptional.get();
+            logger.info("Regular user found: {}. Retrieving hashed password.", email);
+            return new CustomUserDetails(user.getEmail(), user.getPassword(), new ArrayList<>(), user.getId());
+        }
         
-        // For debugging only. Do NOT log passwords in production!
-        // logger.info("Hashed password from DB: {}", admin.getPassword());
-
-        return new User(admin.getEmail(), admin.getPassword(), new ArrayList<>());
+        logger.warn("User not found with email: {}", email);
+        throw new UsernameNotFoundException("User not found with email: " + email);
     }
 }

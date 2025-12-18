@@ -86,6 +86,12 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
+    public List<ProductDTO> getAvailableProductsByType(Product.ProductTypeEnum type) {
+        return productRepository.findByAvailableTrueAndType(type).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
     private ProductDTO convertToDTO(Product product) {
         return ProductDTO.builder()
                 .id(product.getId())
@@ -98,6 +104,7 @@ public class ProductService {
                 .type(product.getType().toString())
                 .categoryId(product.getCategory().getId())
                 .categoryName(product.getCategory().getNom())
+                .available(product.isAvailable())
                 .build();
     }
 }
