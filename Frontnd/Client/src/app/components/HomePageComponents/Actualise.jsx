@@ -5,21 +5,21 @@ import Image from "next/image";
 export default function Actualise() {
   const news = [
     {
-      tag: "#Propriétaires",
+      tag: "Propriétaires",
       title: "Lancement du programme de revenus garantis 2025",
       description:
         "Louez votre bicyclette ou moto et gagnez jusqu'à 800€ de revenus garantis.",
       image: "/bike-owner.jpg",
     },
     {
-      tag: "#Location",
+      tag: "Location",
       title: "Combien coûte la location d'une bicyclette ou d'une moto au mois ?",
       description:
         "Réservez un deux-roues pour vos trajets quotidiens ou vos escapades pendant quelque temps.",
       image: "/scooter-rider.jpg",
     },
     {
-      tag: "#Propriétaires",
+      tag: "Propriétaires",
       title: "Garez votre deux-roues là où il y a de la demande",
       description:
         "Maximisez vos revenus : déposez votre bicyclette ou moto dans les zones les plus demandées.",

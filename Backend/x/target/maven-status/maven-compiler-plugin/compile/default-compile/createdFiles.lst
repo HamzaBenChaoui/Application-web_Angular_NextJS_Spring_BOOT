@@ -19,6 +19,7 @@ com/kaoba/entity/Category.class
 com/kaoba/entity/Admin$AdminBuilder.class
 com/kaoba/dto/ChangePasswordRequest.class
 com/kaoba/service/ProductService.class
+com/kaoba/controller/ContactController.class
 com/kaoba/service/CategoryService.class
 com/kaoba/dto/AdminDTO$AdminDTOBuilder.class
 com/kaoba/entity/Category$CategoryBuilder.class
@@ -32,6 +33,7 @@ com/kaoba/entity/Admin.class
 com/kaoba/dto/LoginResponse.class
 com/kaoba/dto/LoginRequest.class
 com/kaoba/config/SecurityConfig.class
+com/kaoba/dto/ContactRequestDTO.class
 com/kaoba/entity/Rental.class
 com/kaoba/dto/AllocationRequestDTO.class
 com/kaoba/controller/AuthController.class

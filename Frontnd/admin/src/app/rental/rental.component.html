@@ -11,11 +11,21 @@
       <table class="min-w-full text-sm text-left text-gray-600 dark:text-gray-300">
         <thead class="border-b border-gray-200 dark:border-gray-700">
           <tr>
+            <th class="py-3 px-4 font-medium text-gray-800 dark:text-white">Product</th>
+            <th class="py-3 px-4 font-medium text-gray-800 dark:text-white">User</th>
+            <th class="py-3 px-4 font-medium text-gray-800 dark:text-white">Start Date</th>
+            <th class="py-3 px-4 font-medium text-gray-800 dark:text-white">End Date</th>
+            <th class="py-3 px-4 font-medium text-gray-800 dark:text-white">Status</th>
             <th class="py-3 px-4 font-medium text-gray-800 dark:text-white text-right">Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let rental of rentals" class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+            <td class="py-3 px-4"><img [src]="rental.product.image" alt="Product Image" class="h-8 w-8 rounded-full object-cover"></td>
+            <td class="py-3 px-4">{{ rental.user.email }}</td>
+            <td class="py-3 px-4">{{ rental.startDate | date: 'shortDate' }}</td>
+            <td class="py-3 px-4">{{ rental.endDate | date: 'shortDate' }}</td>
+            <td class="py-3 px-4">{{ rental.status }}</td>
             <td class="py-3 px-4 text-right space-x-3">
               <button (click)="openEditModal(rental)" class="text-indigo-600 hover:underline cursor-pointer">Update</button>
               <button (click)="openDeleteModal(rental)" class="text-red-600 hover:underline">Delete</button>

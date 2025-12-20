@@ -9,7 +9,6 @@ const BlogNavbar = () => {
     { href: "/blogs/inspiration", label: "Inspiration", icon: "💡" },
     { href: "/blogs/proprietaires", label: "Conseils et Astuces", icon: "👤" },
     { href: "/blogs/actualites", label: "Technologie et  Innovation", icon: "📢" },
-    { href: "/blogs/business", label: "Business", icon: "💼" }
   ];
 
   return (

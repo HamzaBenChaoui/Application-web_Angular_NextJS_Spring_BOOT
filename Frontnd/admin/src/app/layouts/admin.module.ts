@@ -12,6 +12,7 @@ import { NavbarComponent } from '../components/navbar/navbar.component';
 import { FooterComponent } from '../components/footer/footer.component';
 
 import { FormsModule } from '@angular/forms';
+import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     RouterModule,
     ComponentsModule,
-    FormsModule
+    FormsModule,
+    NgChartsModule
   ],
   exports: [
     AdminComponent,

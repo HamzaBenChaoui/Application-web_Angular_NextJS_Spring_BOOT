@@ -18,6 +18,7 @@ export default function CarList({ filters }) {
         // For now, getProducts does not take filters, so we'll fetch all and filter client-side if needed
         // Or update getProducts to accept filters.
         const allProducts = await getProducts();
+        console.log('Fetched products:', allProducts);
         
         setCars(allProducts);
       } catch (err) {
@@ -52,7 +53,7 @@ export default function CarList({ filters }) {
     <section className="py-16 md:py-24 bg-gradient-to-b from-white to-gray-100 text-gray-900 rounded-t-3xl">
       <div className="container mx-auto px-6">
         <h2 className="text-3xl font-bold text-center text-gray-800 md:text-4xl mb-12">
-          Les moteur au meilleur rapport qualité-prix de Paris
+          Les moteur au meilleur rapport qualité-prix
         </h2>
         {/* Liste de cartes */}
         {displayedCars.length > 0 ? (
@@ -69,33 +70,23 @@ export default function CarList({ filters }) {
                     className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                   <span className="absolute top-4 left-4 bg-white text-purple-700 text-xs font-semibold px-3 py-1.5 rounded-full shadow-md">
-                    {car.category ? car.category.toUpperCase() : 'INCONNU'}
+                    {car.type ? car.type.toUpperCase() : 'INCONNU'}
                   </span>
                 </div>
                 <div className="p-5">
-                  <h3 className="text-lg font-bold text-gray-800">{car.name}</h3>
-                  <div className="flex items-center text-purple-600 text-sm mt-1.5">
-                    <FaStar className="mr-1.5" />
-                    <span className="font-semibold">
-                      {" "}
-                      {car.rating ? car.rating.toFixed(2) : 'N/A'}{" "}
-                    </span>
-                    <span className="text-gray-500 ml-2">
-                      {" "}
-                      ({car.reviews || 0} avis){" "}
-                    </span>
-                  </div>
+                  <h3 className="text-lg font-bold text-gray-800">{car.nameProducts}</h3>
+                
                   <p className="text-gray-600 mt-4 text-sm">
                     {" "}
                     À partir de{" "}
                     <span className="text-lg font-bold text-gray-900">
                       {" "}
-                      {car.priceHour || 'N/A'}€{" "}
+                      {car.stack || 'N/A'}€{" "}
                     </span>{" "}
-                    /h <span className="mx-2">•</span>{" "}
+                    /jour <span className="mx-2">•</span>{" "}
                     <span className="text-lg font-bold text-gray-900">
                       {" "}
-                      {car.priceDay || car.price || 'N/A'}€{" "}
+                      {car.stack || car.stack || 'N/A'}€{" "}
                     </span>{" "}
                     /jour{" "}
                   </p>

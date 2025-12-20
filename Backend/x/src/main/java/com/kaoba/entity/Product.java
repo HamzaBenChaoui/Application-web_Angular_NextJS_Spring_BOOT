@@ -41,6 +41,7 @@ public class Product {
     private Category category;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean available = true;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)

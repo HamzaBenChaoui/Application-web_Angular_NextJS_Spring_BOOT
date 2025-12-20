@@ -40,12 +40,46 @@ export default function ContactForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      console.log('Données de contact:', formData);
-      setIsSubmitted(true);
-      // Gérer l'envoi du formulaire de contact ici
+      try {
+        const response = await fetch('http://localhost:8081/api/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            nomComplet: formData.name,
+            email: formData.email,
+            sujet: formData.subject,
+            message: formData.message,
+          }),
+        });
+
+        if (response.ok) {
+          console.log('Données de contact envoyées:', formData);
+          setIsSubmitted(true);
+        } else {
+          const errorText = await response.text();
+          if (errorText) {
+            try {
+              const errorData = JSON.parse(errorText);
+              console.error("Erreur lors de l'envoi du formulaire:", errorData);
+              setErrors({ api: errorData.message || "Une erreur s'est produite lors de l'envoi du message." });
+            } catch(e) {
+              console.error("Erreur de l'API (pas JSON):", errorText);
+              setErrors({ api: "Une erreur serveur est survenue." });
+            }
+          } else {
+             console.error("Erreur de l'API: réponse vide.");
+             setErrors({ api: "Une erreur serveur est survenue (réponse vide)." });
+          }
+        }
+      } catch (error) {
+        console.error("Erreur lors de l'envoi du formulaire:", error);
+        setErrors({ api: "Impossible de se connecter au serveur. Veuillez réessayer plus tard." });
+      }
     }
   };
 
@@ -111,7 +145,7 @@ export default function ContactForm() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">Adresse</h4>
-                    <p className="text-gray-600">123 Rue du Vélo, Ville Moto, VM 12345</p>
+                    <p className="text-gray-600">649 Boulevard Mohamed V, Casablanca 20250</p>
                   </div>
                 </div>
 
@@ -123,7 +157,7 @@ export default function ContactForm() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">Téléphone</h4>
-                    <p className="text-gray-600">+1 (555) 123-RIDE</p>
+                    <p className="text-gray-600">+212 672577705</p>
                   </div>
                 </div>
 
@@ -225,29 +259,7 @@ export default function ContactForm() {
                   )}
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Méthode de contact préférée
-                  </label>
-                  <div className="flex space-x-4">
-                    {['email', 'phone'].map((method) => (
-                      <label key={method} className="flex items-center">
-                        <input
-                          type="radio"
-                          name="contactMethod"
-                          value={method}
-                          checked={formData.contactMethod === method}
-                          onChange={handleChange}
-                          className="w-4 h-4 text-[#bb00cc] border-gray-300 focus:ring-[#bb00cc]"
-                        />
-                        <span className="ml-2 text-gray-700 capitalize">
-                          {method === 'email' ? 'email' : 'téléphone'}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
+          
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Message *
@@ -273,6 +285,9 @@ export default function ContactForm() {
                 >
                   Envoyer le message
                 </button>
+                {errors.api && (
+                    <p className="text-red-500 text-sm mt-4 text-center">{errors.api}</p>
+                )}
               </form>
             </div>
           </div>

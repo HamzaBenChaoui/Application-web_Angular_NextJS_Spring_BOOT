@@ -72,7 +72,8 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtRequestFilt
                         "/api/products",
                         "/api/products/{id}",
                         "/api/rentals",
-                        "/api/rentals//user/{userId}"
+                        "/api/rentals//user/{userId}",
+                        "/api/contact"
                     ).permitAll() // Ces chemins sont accessibles à tous
                     .requestMatchers("/api/**").authenticated() // Tous les autres chemins /api/** nécessitent un jeton JWT
             )

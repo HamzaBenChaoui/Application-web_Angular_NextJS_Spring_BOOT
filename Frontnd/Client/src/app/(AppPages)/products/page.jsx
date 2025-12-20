@@ -2,13 +2,10 @@
 
 import Link from 'next/link';
 import { getProducts } from '@/app/services/productService';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, Suspense } from 'react'; // Import Suspense
 import { useSearchParams } from 'next/navigation';
-import Footer from '../../components/footer/Footer';
 import { useAuth } from '../../context/AuthContext';
 import { useRouter } from 'next/navigation';
-
-
 
 // Données ne sont plus fictives, elles proviennent de l'API
 
@@ -32,7 +29,7 @@ const PriceRangeSlider = ({ minPrice, maxPrice, value, onChange }) => {
     onChange(newValue);
   };
 
-  const percentage = ((localValue - minPrice) / (maxPrice - minPrice)) * 100;
+  const percentage = maxPrice > minPrice ? ((localValue - minPrice) / (maxPrice - minPrice)) * 100 : 0;
 
   return (
     <div className="space-y-3">
@@ -83,7 +80,7 @@ const PriceRangeSlider = ({ minPrice, maxPrice, value, onChange }) => {
   );
 };
 
-export default function ProductsPage() {
+function ProductsPageClient() {
   const { isLoggedIn, isLoading, favorites, addFavorite, removeFavorite } = useAuth(); // Get auth and favorites state
   const router = useRouter(); // Get router for redirection
   const searchParams = useSearchParams();
@@ -125,13 +122,15 @@ export default function ProductsPage() {
         setProducts(data);
         setFilteredProducts(data);
         
-        const maxPrice = Math.max(...data.map(product => product.stack));
-        const defaultMaxPrice = Math.ceil(maxPrice / 1000) * 1000;
-        
-        setFilters(prev => ({
-          ...prev,
-          priceRange: defaultMaxPrice
-        }));
+        if (data.length > 0) {
+            const maxPrice = Math.max(...data.map(product => product.stack));
+            const defaultMaxPrice = Math.ceil(maxPrice / 1000) * 1000;
+            
+            setFilters(prev => ({
+              ...prev,
+              priceRange: defaultMaxPrice
+            }));
+        }
       } catch (error) {
         console.error("Error fetching products:", error);
         setErrorLoadingProducts("Impossible de charger les produits.");
@@ -563,4 +562,12 @@ console.log(products);
      
     </div>
   );
+}
+
+export default function ProductsPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Chargement des filtres...</div>}>
+            <ProductsPageClient />
+        </Suspense>
+    );
 }

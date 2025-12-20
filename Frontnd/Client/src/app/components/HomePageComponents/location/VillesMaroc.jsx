@@ -11,12 +11,12 @@ export default function VillesMaroc() {
   ]
 
   const liens = [
-    'Location de voiture à l’aéroport',
-    'Location de voiture à la gare',
+    'Location de vos motos ',
+    'Location de velo  à la gare',
     'Marque et modèle',
-    'Location voiture Espagne',
-    'Location voiture Portugal',
-    'Location voiture Algérie',
+    'Location velo Electrique ',
+    'Location velo Rabat ',
+    'Location motos ',
   ]
 
   return (

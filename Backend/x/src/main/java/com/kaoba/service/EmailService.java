@@ -14,6 +14,22 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
+    public void sendEmail(String to, String subject, String body, boolean isHtml) {
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(body, isHtml);
+
+            mailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            // It's a good practice to wrap this in a custom exception
+            throw new RuntimeException("Failed to send email", e);
+        }
+    }
+
     public void sendEmailWithAttachment(String to, String subject, String body, byte[] attachment, String attachmentName, boolean isHtml) {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();

@@ -1,5 +1,4 @@
 import BlogCard from "../components/blogComponents/blogCard";
-
 import BlogsCarousel from "../components/blogComponents/BlogsCarousel";
 import { blogPosts } from "../data/blogs-data";
 
@@ -20,7 +19,7 @@ export default function BlogsPage() {
           <h1 className="text-5xl font-bold mb-8 tracking-wider">Sur la route</h1>
           <p className="text-xl mt-6 opacity-90 max-w-2xl mx-auto leading-relaxed">
             Nos conseils, mises à jour et dernières trouvailles
-            pour vivre au mieux <br /> vos locations de voiture
+            pour vivre au mieux <br /> vos locations de velo et motos 
           </p>
         </div>
       </div>
@@ -35,7 +34,7 @@ export default function BlogsPage() {
         {/* Blog Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {blogPosts.map((post) => (
-            <BlogCard key={post.id} post={post} />
+            <BlogCard key={post.id} post={post} basePath="blogs" />
           ))}
         </div>
       </div>
